@@ -1,9 +1,5 @@
 package net.robert.mcduro.math;
 
-import net.minecraft.client.MinecraftClient;
-
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class MathTest {
