@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:deepslate"
+    },
+    "=": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#=#",
+    " # "
+  ],
+  "result": {
+    "item": "mcduro:smith_smelting_chimney"
+  },
+  "show_notification": true
+}

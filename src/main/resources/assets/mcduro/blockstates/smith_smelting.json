@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "mcduro:block/smith_smelting", "uvlock": true },
+    "facing=east":  { "model": "mcduro:block/smith_smelting", "y":  90, "uvlock": true },
+    "facing=south": { "model": "mcduro:block/smith_smelting", "y": 180, "uvlock": true },
+    "facing=west":  { "model": "mcduro:block/smith_smelting", "y": 270, "uvlock": true }
+  }
+}

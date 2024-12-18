@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_raw_shen_silver": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mcduro:raw_shen_silver"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:shen_silver_ingot_from_blasting_raw_shen_silver"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_raw_shen_silver"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:shen_silver_ingot_from_blasting_raw_shen_silver"
+    ]
+  },
+  "sends_telemetry_event": false
+}

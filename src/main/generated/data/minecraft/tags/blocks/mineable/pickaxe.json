@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "mcduro:shen_silver_block",
+    "mcduro:shen_silver_ore",
+    "mcduro:nether_shen_silver_ore",
+    "mcduro:deepslate_shen_silver_ore",
+    "mcduro:jue_xing_tai",
+    "mcduro:smith_smelting",
+    "mcduro:smith_smelting_chimney"
+  ]
+}

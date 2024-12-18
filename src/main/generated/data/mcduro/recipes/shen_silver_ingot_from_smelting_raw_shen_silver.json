@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 600,
+  "experience": 0.4,
+  "group": "recipe.shen_silver_ingot_from_smelting",
+  "ingredient": {
+    "item": "mcduro:raw_shen_silver"
+  },
+  "result": "mcduro:shen_silver_ingot"
+}

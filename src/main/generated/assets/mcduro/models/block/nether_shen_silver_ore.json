@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "mcduro:block/nether_shen_silver_ore"
+  }
+}

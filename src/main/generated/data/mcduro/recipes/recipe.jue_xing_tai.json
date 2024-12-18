@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "minecraft:planks"
+    },
+    "=": {
+      "item": "minecraft:deepslate"
+    },
+    "@": {
+      "item": "minecraft:stone"
+    }
+  },
+  "pattern": [
+    "@#@",
+    "#=#",
+    "@#@"
+  ],
+  "result": {
+    "item": "mcduro:jue_xing_tai"
+  },
+  "show_notification": true
+}

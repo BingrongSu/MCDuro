@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:glass"
+    },
+    "=": {
+      "item": "minecraft:lapis_lazuli"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#=#",
+    " # "
+  ],
+  "result": {
+    "item": "mcduro:jx_ball"
+  },
+  "show_notification": true
+}

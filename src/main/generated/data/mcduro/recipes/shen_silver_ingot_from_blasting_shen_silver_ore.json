@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 300,
+  "experience": 0.4,
+  "group": "recipe.shen_silver_ingot_from_blasting",
+  "ingredient": {
+    "item": "mcduro:shen_silver_ore"
+  },
+  "result": "mcduro:shen_silver_ingot"
+}

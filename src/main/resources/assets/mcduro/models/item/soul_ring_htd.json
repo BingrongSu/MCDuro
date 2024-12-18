@@ -1,0 +1,20 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"1": "mcduro:item/soul_ring/swnhh001"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 0.5, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 3.6093, 2.30465], "texture": "#1"},
+				"east": {"uv": [0, 0, 4.14884, 2.37907], "texture": "#1"},
+				"south": {"uv": [0, 0, 3.62791, 2.06279], "texture": "#1"},
+				"west": {"uv": [0, 0, 1.74884, 1.87674], "texture": "#1"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#1"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#1"}
+			}
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+  "type": "mcduro:smith_smelting",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:coal"
+    }
+  ],
+  "output": {
+    "item": "minecraft:diamond",
+    "count": 3
+  }
+}

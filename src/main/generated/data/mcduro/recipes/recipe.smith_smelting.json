@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:deepslate"
+    },
+    "=": {
+      "item": "minecraft:blast_furnace"
+    },
+    "@": {
+      "item": "minecraft:iron_bars"
+    }
+  },
+  "pattern": [
+    "###",
+    "#=#",
+    "#@#"
+  ],
+  "result": {
+    "item": "mcduro:smith_smelting"
+  },
+  "show_notification": true
+}
