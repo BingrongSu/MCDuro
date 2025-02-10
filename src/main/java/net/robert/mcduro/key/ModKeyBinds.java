@@ -6,6 +6,9 @@ import net.minecraft.client.util.InputUtil;
 import net.robert.mcduro.MCDuro;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ModKeyBinds {
     public static KeyBinding toggleSeeThoughKeyBinding;
     public static KeyBinding useSoulSkillKeyBinding;
@@ -14,7 +17,7 @@ public class ModKeyBinds {
     public static KeyBinding switchWuHunKeyBinding;
     public static KeyBinding increaseSkillIndexKeyBinding;
     public static KeyBinding decreaseSkillIndexKeyBinding;
-    public static KeyBinding rightClickKeyBinding;
+    public static List<KeyBinding> soulSkillsKeyBindings = new ArrayList<>();
 
     public static void registerKeyBinds(){
         toggleSeeThoughKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -27,7 +30,7 @@ public class ModKeyBinds {
         useSoulSkillKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.mcduro.use_soul_skill", // The translation key of the keybinding's name
                 InputUtil.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
-                GLFW.GLFW_KEY_R, // The keycode of the key
+                GLFW.GLFW_KEY_C, // The keycode of the key
                 "category.mcduro.mod_key_binds" // The translation key of the keybinding's category.
         ));
 
@@ -64,6 +67,17 @@ public class ModKeyBinds {
                 GLFW.GLFW_KEY_DOWN, // The keycode of the key
                 "category.mcduro.mod_key_binds" // The translation key of the keybinding's category.
         ));
+
+//        for (int i = 0; i < 9; i++) {
+//            soulSkillsKeyBindings.add(
+//                    KeyBindingHelper.registerKeyBinding(new KeyBinding(
+//                            "key.mcduro.soul_skill_%d".formatted(i+1), // The translation key of the keybinding's name
+//                            InputUtil.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
+//                            GLFW.GLFW_KEY_1 + i, // The keycode of the key
+//                            "category.mcduro.mod_key_binds" // The translation key of the keybinding's category.
+//                    ))
+//            );
+//        }
 
         MCDuro.LOGGER.info("Registering Key Binds");
     }

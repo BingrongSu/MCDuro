@@ -81,7 +81,7 @@ public class Helper {
      * @param max 生成的最大值
      * @return 正态分布的随机数
      */
-    private static int gaussianRandom(long seed, double mean, double stdDeviation, double min, double max) {
+    public static int gaussianRandom(long seed, double mean, double stdDeviation, double min, double max) {
         Random random = new Random(seed);
 
         // 正态分布的参数 // 期望值，中心点 // 标准差，决定分布宽度

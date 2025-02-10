@@ -36,7 +36,7 @@ public class PlayerEntityRendererMixin {
         int n = currentWuHun.size();
         int startSlot = (9 - n) / 2;                                    // 按0～8九个槽位计算，第一个魂环的槽位
         float rotateV = 1 / 60f;                                        // 魂环转速，单位：degree/tick
-        float sepMultiplier = 1.34f;                                    // 魂环间距乘数
+        float sepMultiplier = 1.32f;                                    // 魂环间距乘数
 
         List<MatrixStack> matricesList = Collections.nCopies(n, matrices);
 
@@ -69,7 +69,7 @@ public class PlayerEntityRendererMixin {
             matricesList.get(j).translate(0, 0.5, 0);
             matricesList.get(j).scale(1.3f, 1f, 1.3f);
             matricesList.get(j).scale(radius, 1f, radius);
-            matricesList.get(j).translate(0, pos, 0);
+            matricesList.get(j).translate(0, pos + 0.001 * j, 0);
             RotationAxis axis = j % 2 == 0 ? RotationAxis.POSITIVE_Y : RotationAxis.NEGATIVE_Y;
             matricesList.get(j).multiply(axis.rotationDegrees(player.getWorld().getTickOrder() * rotateV % 360));
             matricesList.get(j).multiply(axis.rotationDegrees(player.getWorld().getTickOrder() * rotateV % 360));

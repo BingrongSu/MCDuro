@@ -10,13 +10,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.world.World;
+import net.robert.mcduro.MCDuro;
 import net.robert.mcduro.events.ModEvents;
 import net.robert.mcduro.math.Helper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayerData {
     public Integer hunLi = 0;                                               // 玩家当前魂力
@@ -26,7 +24,9 @@ public class PlayerData {
     public String openedWuHun = "null";                                     // 玩家当前开启的武魂
     public Integer skillIndex = -1;                                         // 玩家当前使用的魂技
     public HashMap<String, Boolean> blProperties = new HashMap<>();
-    public HashMap<UUID, Long> openWuHunTicks = new HashMap<>();
+    public HashMap<UUID, Long> openWuHunTicks = new HashMap<>();            // 玩家打开武魂的时刻
+    public HashMap<UUID, String> allys = new HashMap<>();                   // 玩家的盟友
+    public PlayerEntity lastAttacker = null;                                // 上一个攻击此玩家的玩家UUID
 
     private final List<String> standardWuHun = List.of(                     // 标准武魂类型
                                                         "liuLi",
@@ -49,7 +49,7 @@ public class PlayerData {
             MinecraftServer server = world.getServer();
             PacketByteBuf data = PacketByteBufs.create();
             data.writeInt(hunLi);
-            player.sendMessage(Text.of("Server: Hun Li Set To: " + hunLi));
+            System.out.println("Server: Hun Li Set To: " + hunLi);
             assert server != null;
             ServerPlayerEntity playerEntity = server.getPlayerManager().getPlayer(player.getUuid());
             server.execute(() -> {
@@ -77,7 +77,7 @@ public class PlayerData {
             MinecraftServer server = world.getServer();
             PacketByteBuf data = PacketByteBufs.create();
             data.writeInt(maxHunLi);
-            player.sendMessage(Text.of("Server: Max Hun Li Set To: " + maxHunLi));
+            System.out.println("Server -> Max Hun Li Set To: " + maxHunLi);
             assert server != null;
             ServerPlayerEntity playerEntity = server.getPlayerManager().getPlayer(player.getUuid());
             server.execute(() -> {
@@ -163,10 +163,10 @@ public class PlayerData {
     }
 
     public void addRing(PlayerEntity player, double year) {
-        if (!player.getWorld().isClient) {
+        if (!player.getWorld().isClient && wuHun.get(openedWuHun).size() < 9) {
             wuHun.get(openedWuHun).add(List.of(year, 0d));
+            syncWuHun(player);
         }
-        syncWuHun(player);
     }
 
     public void switchWuHun(PlayerEntity player) {
@@ -220,5 +220,31 @@ public class PlayerData {
             assert client != null;
             client.execute(() -> ClientPlayNetworking.send(ModEvents.SET_OPENED_WU_HUN, buf));
         }
+    }
+
+    public void addAlly(PlayerEntity player) {
+        if (allys.containsKey(player.getUuid())) {
+            MCDuro.LOGGER.info("Ally Manager -> Already added {}!", player.getName().getString());
+        } else {
+            allys.put(player.getUuid(), player.getName().getString());
+            MCDuro.LOGGER.info("Ally Manager -> Successfully added {}!", player.getName().getString());
+        }
+    }
+
+    public void delAlly(PlayerEntity player) {
+        if (!allys.containsKey(player.getUuid())) {
+            MCDuro.LOGGER.info("Ally Manager -> Don't have {} in your ally list!", player.getName().getString());
+        } else {
+            allys.remove(player.getUuid());
+            MCDuro.LOGGER.info("Ally Manager -> Successfully removed {}!", player.getName().getString());
+        }
+    }
+
+    public List<String> listOfAllys() {
+        return new ArrayList<>(allys.values());
+    }
+
+    public void refreshAttacker(PlayerEntity player) {
+        lastAttacker = player;
     }
 }

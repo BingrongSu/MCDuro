@@ -3,12 +3,12 @@
   "package": "net.robert.mcduro.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
+    "PlayerEntityMixin",
     "PlayerEntityRendererMixin"
   ]
 }

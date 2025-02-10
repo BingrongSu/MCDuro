@@ -4,6 +4,7 @@ package net.robert.mcduro.player;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
@@ -39,6 +40,9 @@ public class StateSaverAndLoader extends PersistentState {
             playerNbt.putString("openedWuHun", playerData.openedWuHun);
             playerNbt.putInt("skillIndex", playerData.skillIndex);
 
+            NbtCompound allysNbt = new NbtCompound();
+            playerData.allys.forEach((uuid1, name) -> allysNbt.putString(uuid1.toString(), name));
+            playerNbt.put("allys", allysNbt);
 
             playersNbt.put(uuid.toString(), playerNbt);
         });
@@ -74,6 +78,11 @@ public class StateSaverAndLoader extends PersistentState {
             playerData.openedWuHun = playerNbt.getString("openedWuHun");
             playerData.skillIndex = playerNbt.getInt("skillIndex");
 
+            NbtCompound allysNbt = playerNbt.getCompound("allys");
+            playerData.allys.clear();
+            for (String uuidS : allysNbt.getKeys()) {
+                playerData.allys.put(UUID.fromString(uuidS), allysNbt.getString(uuidS));
+            }
 
             UUID uuid = UUID.fromString(key);
             state.players.put(uuid, playerData);
@@ -94,7 +103,7 @@ public class StateSaverAndLoader extends PersistentState {
 
         // 当第一次调用了方法 'getOrCreate' 后，它会创建新的 'StateSaverAndLoader' 并将其存储于  'PersistentStateManager' 中。
         //  'getOrCreate' 的后续调用将本地的 'StateSaverAndLoader' NBT 传递给 'StateSaverAndLoader::createFromNbt'。
-        StateSaverAndLoader state = persistentStateManager.getOrCreate(type, MCDuro.MOD_ID);
+        StateSaverAndLoader state = persistentStateManager.getOrCreate(type, (new Identifier(MCDuro.MOD_ID, "players_data")).toString());
 
         // 若状态未标记为脏(dirty)，当 Minecraft 关闭时， 'writeNbt' 不会被调用，相应地，没有数据会被保存。
         // 从技术上讲，只有在事实上发生数据变更时才应当将状态标记为脏(dirty)。
