@@ -6,8 +6,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -15,23 +13,18 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.robert.mcduro.block.ModBlocks;
-import net.robert.mcduro.effects.ModEffects;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FHSkills {
     // 1. 凤凰火线
-    public static void Skill1(PlayerEntity player, ServerWorld world, double power) {
+    public static void skill1(PlayerEntity player, ServerWorld world, double power) {
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 
         Vec3d looking = player.getRotationVector();
@@ -101,7 +94,7 @@ public class FHSkills {
     }
 
     // 2. 欲火凤凰
-    public static void Skill2(PlayerEntity player, double power) {
+    public static void skill2(PlayerEntity player, double power) {
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
         double amp = 600 + (3600-600) * power;
         Long duration = (long) (amp * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(1).get(0))) * (1 + (0.05+(0.2-0.05)*power)));
@@ -111,12 +104,12 @@ public class FHSkills {
     // TODO 02/09/2025 魂核的凝聚、魂核增幅魂力恢复
 
     // 3. 凤翼天翔
-    public static void Skill3(PlayerEntity player, double power) {
+    public static void skill3(PlayerEntity player, double power) {
         if (!player.getWorld().isClient) {
             PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-            double amp = 600 + (6000-2400) * power;
+            double amp = 2400 + (6000-2400) * power;
             Long duration = (long) (amp * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(2).get(0))) * (1 + (0.05+(0.2-0.05)*power)));
-            playerData.addStatusEffect(player, "FHSkill3", new ArrayList<>());
+            playerData.addStatusEffect(player, "FHSkill3", new ArrayList<>(List.of(duration)));
             if (((ServerPlayerEntity) player).interactionManager.getGameMode().isSurvivalLike()) {
                 player.getAbilities().allowFlying = true;
                 player.sendAbilitiesUpdate();

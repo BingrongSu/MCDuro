@@ -18,7 +18,6 @@ import net.robert.mcduro.MCDuro;
 import net.robert.mcduro.data.ServerData;
 import net.robert.mcduro.effects.ModEffects;
 import net.robert.mcduro.game.ModGameRules;
-import net.robert.mcduro.game.Modifiers;
 import net.robert.mcduro.math.Helper;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
@@ -147,10 +146,14 @@ public class ModServerEvents {
                 case "fengHuang":
                     switch (n) {
                         case 0:
-                            FHSkills.Skill1(player, server.getOverworld(), power);
+                            FHSkills.skill1(player, server.getOverworld(), power);
                             break;
                         case 1:
-                            FHSkills.Skill2(player, power);
+                            FHSkills.skill2(player, power);
+                            break;
+                        case 2:
+                            FHSkills.skill3(player, power);
+                            break;
                     }
                     break;
                 case "xiangChang":
@@ -161,6 +164,12 @@ public class ModServerEvents {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                 PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+                if (!playerData.statusEffects.containsKey("FHSkill3") && playerData.hunLiLevel < 70) {
+                    if (player.interactionManager.getGameMode().isSurvivalLike()) {
+                        player.getAbilities().allowFlying = false;
+                        player.sendAbilitiesUpdate();
+                    }
+                }
                 for (String name : playerData.statusEffects.keySet()) {
                     playerData.statusEffects.get(name).set(0, playerData.statusEffects.get(name).get(0) - 1L);
                     if (playerData.statusEffects.get(name).get(0) <= 0) {
