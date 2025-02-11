@@ -2,7 +2,6 @@ package net.robert.mcduro;
 
 import net.fabricmc.api.ModInitializer;
 
-
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.advancement.criterion.Criteria;
@@ -20,7 +19,6 @@ import net.robert.mcduro.events.ModServerEvents;
 import net.robert.mcduro.game.ModGameRules;
 import net.robert.mcduro.item.ModItemGroup;
 import net.robert.mcduro.item.ModItems;
-import net.robert.mcduro.key.ModKeyBinds;
 import net.robert.mcduro.math.Helper;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
