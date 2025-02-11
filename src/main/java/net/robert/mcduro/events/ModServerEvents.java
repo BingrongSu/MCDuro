@@ -164,6 +164,7 @@ public class ModServerEvents {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                 PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+                if (playerData.statusEffects.isEmpty()) continue;
                 if (!playerData.statusEffects.containsKey("FHSkill3") && playerData.hunLiLevel < 70) {
                     if (player.interactionManager.getGameMode().isSurvivalLike()) {
                         player.getAbilities().allowFlying = false;
