@@ -172,21 +172,37 @@ public class ModServerEvents {
                 }
                 for (String name : playerData.statusEffects.keySet()) {
                     playerData.statusEffects.get(name).set(0, playerData.statusEffects.get(name).get(0) - 1L);
+                    if (ModEffects.selfEnhancing.contains(name)) {
+                        if (playerData.openedWuHun.equals("null")) {
+                            playerData.statusEffects.get(name).set(1, playerData.statusEffects.get(name).get(1) + 1L);
+                        } else {
+                            playerData.statusEffects.get(name).set(1, 0L);
+                        }
+                    }
+                    boolean showParticles = true, ambient = true;
+                    if (playerData.statusEffects.get(name).get(1) > 0) {
+                        showParticles = false;
+                        ambient = false;
+                    }
+                    if (playerData.statusEffects.get(name).get(1) > 5 * 20L) {
+                        playerData.removeStatusEffect(player, name);
+                        continue;
+                    }
                     if (playerData.statusEffects.get(name).get(0) <= 0) {
                         playerData.removeStatusEffect(player, name);
                     } else {
                         switch (name) {
                             case "FHSkill2":
-                                player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH2, 10, 1, true, true, true));
+                                player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH2, 10, 1, ambient, showParticles, true));
                                 break;
                             case "FHSkill3":
-                                player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH3, 10, 1, true, true, true));
+                                player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH3, 10, 1, ambient, showParticles, true));
                                 break;
                             case "FHSkill7":
-                                player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH7, 10, 1, true, true, true));
+                                player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH7, 10, 1, ambient, showParticles, true));
                                 break;
                             case "FHSkill8":
-                                player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH8, 10, 1, true, true, true));
+                                player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH8, 10, 1, ambient, showParticles, true));
                                 break;
                         }
                     }
