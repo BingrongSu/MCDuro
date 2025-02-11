@@ -35,6 +35,21 @@ public class ModItemGroup {
                         entries.add(ModItems.SOUL_RING_TTD);
                         entries.add(ModItems.SOUL_RING_HTD);
                         entries.add(ModItems.WU_HUN_FENG_HUANG);
+
+                        entries.add(ModItems.HUNLI_PILL_L1);
+                        entries.add(ModItems.HUNLI_PILL_L2);
+                        entries.add(ModItems.HUNLI_PILL_L3);
+                        entries.add(ModItems.HUNLI_PILL_L4);
+                        entries.add(ModItems.HUNLI_PILL_L5);
+                        entries.add(ModItems.HUNLI_PILL_L6);
+                        entries.add(ModItems.HUNLI_PILL_L7);
+                        entries.add(ModItems.MAX_HUNLI_PILL_L1);
+                        entries.add(ModItems.MAX_HUNLI_PILL_L2);
+                        entries.add(ModItems.MAX_HUNLI_PILL_L3);
+                        entries.add(ModItems.MAX_HUNLI_PILL_L4);
+                        entries.add(ModItems.MAX_HUNLI_PILL_L5);
+                        entries.add(ModItems.MAX_HUNLI_PILL_L6);
+                        entries.add(ModItems.MAX_HUNLI_PILL_L7);
                         // 添加物品到物品栏
                     })).build());
 

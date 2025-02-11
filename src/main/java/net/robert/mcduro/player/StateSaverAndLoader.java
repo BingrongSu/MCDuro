@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import net.robert.mcduro.MCDuro;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class StateSaverAndLoader extends PersistentState {
     public HashMap<UUID, PlayerData> players = new HashMap<>();
@@ -30,19 +31,26 @@ public class StateSaverAndLoader extends PersistentState {
                 years.forEach(year -> {
                     NbtCompound elementNbt = new NbtCompound();
                     elementNbt.putDouble("year", year.get(0));
-                    elementNbt.putDouble("value1", year.get(1));
+                    elementNbt.putDouble("skillPower", year.get(1));
                     yearsNbtList.add(elementNbt);
                 });
                 wuHunNbt.put(name, yearsNbtList);
             });
             playerNbt.put("wuHun", wuHunNbt);
 
-            playerNbt.putString("openedWuHun", playerData.openedWuHun);
-            playerNbt.putInt("skillIndex", playerData.skillIndex);
+//            playerNbt.putString("openedWuHun", playerData.openedWuHun);
+//            playerNbt.putInt("skillIndex", playerData.skillIndex);
 
             NbtCompound allysNbt = new NbtCompound();
             playerData.allys.forEach((uuid1, name) -> allysNbt.putString(uuid1.toString(), name));
             playerNbt.put("allys", allysNbt);
+
+            NbtCompound effectsNbt = new NbtCompound();
+            playerData.statusEffects.forEach((name, data) -> {
+                NbtLongArray dataNbt = new NbtLongArray(data);
+                effectsNbt.put(name, dataNbt);
+            });
+            playerNbt.put("statusEffects", effectsNbt);
 
             playersNbt.put(uuid.toString(), playerNbt);
         });
@@ -69,19 +77,25 @@ public class StateSaverAndLoader extends PersistentState {
                 assert yearsNbtList != null;
                 for (int i = 0; i < yearsNbtList.size(); i++) {
                     double year = yearsNbtList.getCompound(i).getDouble("year");
-                    double value1 = yearsNbtList.getCompound(i).getDouble("value1");
+                    double value1 = yearsNbtList.getCompound(i).getDouble("skillPower");
                     playerData.wuHun.get(name).add(List.of(year, value1));
                 }
             }
             System.out.println(playerData.wuHun);
 
-            playerData.openedWuHun = playerNbt.getString("openedWuHun");
-            playerData.skillIndex = playerNbt.getInt("skillIndex");
+//            playerData.openedWuHun = playerNbt.getString("openedWuHun");
+//            playerData.skillIndex = playerNbt.getInt("skillIndex");
 
             NbtCompound allysNbt = playerNbt.getCompound("allys");
             playerData.allys.clear();
             for (String uuidS : allysNbt.getKeys()) {
                 playerData.allys.put(UUID.fromString(uuidS), allysNbt.getString(uuidS));
+            }
+
+            NbtCompound effectsNbt = playerNbt.getCompound("statusEffects");
+            playerData.statusEffects.clear();
+            for (String name : effectsNbt.getKeys()) {
+                playerData.statusEffects.put(name, Arrays.stream(effectsNbt.getLongArray(name)).boxed().collect(Collectors.toList()));
             }
 
             UUID uuid = UUID.fromString(key);
@@ -103,7 +117,8 @@ public class StateSaverAndLoader extends PersistentState {
 
         // 当第一次调用了方法 'getOrCreate' 后，它会创建新的 'StateSaverAndLoader' 并将其存储于  'PersistentStateManager' 中。
         //  'getOrCreate' 的后续调用将本地的 'StateSaverAndLoader' NBT 传递给 'StateSaverAndLoader::createFromNbt'。
-        StateSaverAndLoader state = persistentStateManager.getOrCreate(type, (new Identifier(MCDuro.MOD_ID, "players_data")).toString());
+        StateSaverAndLoader state = persistentStateManager.getOrCreate(type, "players_data");
+//        StateSaverAndLoader state = persistentStateManager.getOrCreate(type, (new Identifier(MCDuro.MOD_ID, "players_data")).toString());
 
         // 若状态未标记为脏(dirty)，当 Minecraft 关闭时， 'writeNbt' 不会被调用，相应地，没有数据会被保存。
         // 从技术上讲，只有在事实上发生数据变更时才应当将状态标记为脏(dirty)。

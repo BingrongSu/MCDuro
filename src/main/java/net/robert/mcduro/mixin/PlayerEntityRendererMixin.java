@@ -8,9 +8,11 @@ import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
 import net.robert.mcduro.events.ModClientEvents;
 import net.robert.mcduro.item.ModItems;
 import net.robert.mcduro.player.PlayerData;
@@ -39,6 +41,7 @@ public class PlayerEntityRendererMixin {
         float sepMultiplier = 1.32f;                                    // 魂环间距乘数
 
         List<MatrixStack> matricesList = Collections.nCopies(n, matrices);
+        MatrixStack wuHunMatrices = matrices;
 
         ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
         for (int j = 0; j < n; j++) {
@@ -77,9 +80,17 @@ public class PlayerEntityRendererMixin {
             itemRenderer.renderItem(suitableStack(currentWuHun.get(j)), ModelTransformationMode.HEAD, lightLevel, OverlayTexture.DEFAULT_UV, matricesList.get(j), vertexConsumerProvider, player.getWorld(), 1);
             matricesList.get(j).pop();
         }
+        if (playerData.openedWuHun.equals("fengHuang")) {
+            wuHunMatrices.push();
+            wuHunMatrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(player.bodyYaw));
+            wuHunMatrices.translate(0, 0.2f, -0.7);
+            wuHunMatrices.scale(2f, 2f, 0.2f);
+            Vec3d yawVec = getPlayerBodyFacingVector(player.bodyYaw);
+//            wuHunMatrices.translate(0, 0, -4);
+            itemRenderer.renderItem(new ItemStack(ModItems.WU_HUN_FENG_HUANG), ModelTransformationMode.HEAD, lightLevel, OverlayTexture.DEFAULT_UV, matrices, vertexConsumerProvider, player.getWorld(), 1);
+            wuHunMatrices.pop();
+        }
     }
-    // TODO 12/08/2024 同步玩家魂环年限、魂环参数、开启的武魂
-    // TODO 12/08/2024 添加武魂果实、魂环果实
     // TODO 12/08/2024 添加不同颜色魂环（缺带金纹的十万年和百万年）
 
     @Unique
@@ -97,5 +108,17 @@ public class PlayerEntityRendererMixin {
         } else {
             return new ItemStack(ModItems.SOUL_RING_TEN, 1);
         }
+    }
+
+    @Unique
+    private static Vec3d getPlayerBodyFacingVector(float bodyYaw) {
+        // 获取身体朝向（Yaw 角度）
+        double radians = Math.toRadians(bodyYaw); // 转换为弧度
+
+        // 计算方向向量 (忽略Y轴的影响)
+        double x = -Math.sin(radians); // X 轴方向
+        double z = Math.cos(radians);  // Z 轴方向
+
+        return new Vec3d(x, 0, z);
     }
 }

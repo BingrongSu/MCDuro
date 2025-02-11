@@ -65,9 +65,8 @@ public class JXBallBlock extends BlockWithEntity implements BlockEntityProvider 
         if (!playerData.wuHun.isEmpty()) {
             return false;
         }
-        player.setNoGravity(true);
-        player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 100, 2, false, false, false));
-        MCDuro.scheduledTask(() -> {playerData.jueXing(player); player.setNoGravity(false);}, 100L);
+        player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 100, 100, false, false, false));
+        MCDuro.scheduledTask(() -> playerData.jueXing(player), 100L);
         return true;
     }
 

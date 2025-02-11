@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.robert.mcduro.block.ModBlocks;
+import net.robert.mcduro.effects.ModEffects;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
 
@@ -31,14 +32,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class FHSkills {
     // 1. 凤凰火线
     public static void Skill1(PlayerEntity player, ServerWorld world, double power) {
-        Vec3d looking = player.getRotationVector();
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+
+        Vec3d looking = player.getRotationVector();
         double x = looking.x, y = looking.y, z = looking.z;
         List<Entity> tmp = new ArrayList<>();
         double dDistance = .25;
         double distance = (playerData.hunLiLevel / 1.2d) * (1 + 0.05+(0.2-0.05)*power);
         double input = playerData.maxHunLi * (0.05+(0.2-0.05)*power);
         int cross = 0;
+
+        playerData.increaseHunLi(-(int)(input + 1), player);
 
         for (double i = 0; i < distance && cross <= 25; i+=dDistance) {
             float damage = (float) (input/5d * (1-((i - 1) / playerData.hunLiLevel)));
@@ -96,21 +100,25 @@ public class FHSkills {
         }
     }
 
-//    // 2. 欲火凤凰
-//    public static void Skill2(PlayerEntity player) {
-//        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-//        player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH2, Math.min(playerData.years.get("fengHuang").get(1), 6000), 1, false, true, true));
-//    }
-//
-//    // 3. 凤翼天翔
-//    public static void Skill3(PlayerEntity player) {
-//        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-//        player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH3, Math.min(playerData.years.get("fengHuang").get(2), 6000), 1, false, true, true));
-//        if (((ServerPlayerEntity) player).interactionManager.getGameMode().isSurvivalLike()) {
-//            player.getAbilities().allowFlying = true;
-//            player.sendAbilitiesUpdate();
-//        }
-//    }
+    // 2. 欲火凤凰
+    public static void Skill2(PlayerEntity player, double power) {
+        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+        double amp = 600 + (3600-600) * power;
+        Long duration = (long) (amp * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(1).get(0))) * (1 + (0.05+(0.2-0.05)*power)));
+        playerData.addStatusEffect(player, "FHSkill2", new ArrayList<>(List.of(duration)));
+    }
+    // TODO 02/10/2025 关闭武魂时状态效果逐渐消失，5秒内重新开启武魂恢复；状态效果闪动（ambient）
+    // TODO 02/09/2025 魂核的凝聚、魂核增幅魂力恢复
+
+    // 3. 凤翼天翔
+    public static void Skill3(PlayerEntity player) {
+        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+
+        if (((ServerPlayerEntity) player).interactionManager.getGameMode().isSurvivalLike()) {
+            player.getAbilities().allowFlying = true;
+            player.sendAbilitiesUpdate();
+        }
+    }
 //
 //    // 4. 凤凰啸天击
 //    public static void Skill4(PlayerEntity player) {
@@ -268,18 +276,10 @@ public class FHSkills {
 //    }
 
     private static float damageBoosted(float damage, PlayerEntity player, PlayerData playerData) {
-//        if (player.hasStatusEffect(ModEffects.SkillFH2)) {
-//            damage += playerData.years.get("fengHuang").get(1) / 90f;
-//            player.sendMessage(Text.of("增幅2!"));
-//        }
-//        if (player.hasStatusEffect(ModEffects.SkillFH3)) {
-//            damage += playerData.years.get("fengHuang").get(2) / 150f;
-//            player.sendMessage(Text.of("增幅3!"));
-//        }
-//        if (player.hasStatusEffect(ModEffects.SkillFH7)) {
-//            damage *= 2;
-//            player.sendMessage(Text.of("增幅7!"));
-//        }
+        if (playerData.statusEffects.containsKey("FHSkill2")) {
+            damage *= 1.3f;
+            System.out.println("Skill Boost FH2");
+        }
 
         return damage;
     }

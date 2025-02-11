@@ -10,6 +10,7 @@ import net.robert.mcduro.block.entity.ModBlockEntities;
 import net.robert.mcduro.block.entity.renderer.JXBallBlockEntityRenderer;
 import net.robert.mcduro.block.entity.renderer.SmithSmeltingBlockEntityRenderer;
 import net.robert.mcduro.events.ModClientEvents;
+import net.robert.mcduro.key.ModKeyBinds;
 import net.robert.mcduro.screen.ModScreenHandlers;
 import net.robert.mcduro.screen.SmithSmeltingScreen;
 
@@ -18,6 +19,8 @@ public class MCDuroClient implements ClientModInitializer {
     public void onInitializeClient() {
         MCDuro.LOGGER.info("Initialize Client");
         ModClientEvents.registerModClientEvents();
+
+        ModKeyBinds.registerKeyBinds();
 
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.JX_BALL, RenderLayer.getTranslucent());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.JUE_XING_TAI, RenderLayer.getTranslucent());

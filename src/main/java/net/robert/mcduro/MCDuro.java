@@ -4,14 +4,19 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.text.Text;
+import net.robert.mcduro.advancements.GainSoulRingCriterion;
+import net.robert.mcduro.advancements.GainWuhunCriterion;
 import net.robert.mcduro.block.ModBlocks;
 import net.robert.mcduro.block.entity.ModBlockEntities;
+import net.robert.mcduro.effects.ModEffects;
 import net.robert.mcduro.events.ModEvents;
 import net.robert.mcduro.events.ModServerEvents;
+import net.robert.mcduro.game.ModGameRules;
 import net.robert.mcduro.item.ModItemGroup;
 import net.robert.mcduro.item.ModItems;
 import net.robert.mcduro.key.ModKeyBinds;
@@ -36,6 +41,16 @@ public class MCDuro implements ModInitializer {
 
 	public static Map<Runnable, Long> tasks = new HashMap<>();
 
+	public static GainWuhunCriterion GAIN_WUHUN = Criteria.register(MOD_ID + "/gain_wuhun", new GainWuhunCriterion());
+	public static GainWuhunCriterion GAIN_WUHUN_FH = Criteria.register(MOD_ID + "/gain_wuhun_fh", new GainWuhunCriterion());
+	public static GainWuhunCriterion GET_STUCK_CRITERION = Criteria.register(MOD_ID + "/get_stuck", new GainWuhunCriterion());
+	public static GainSoulRingCriterion GET_RING_TEN_CRI = Criteria.register(MOD_ID + "/get_ring_ten", new GainSoulRingCriterion());
+	public static GainSoulRingCriterion GET_RING_HUD_CRI = Criteria.register(MOD_ID + "/get_ring_hud", new GainSoulRingCriterion());
+	public static GainSoulRingCriterion GET_RING_THD_CRI = Criteria.register(MOD_ID + "/get_ring_thd", new GainSoulRingCriterion());
+	public static GainSoulRingCriterion GET_RING_TTD_CRI = Criteria.register(MOD_ID + "/get_ring_ttd", new GainSoulRingCriterion());
+	public static GainSoulRingCriterion GET_RING_HTD_CRI = Criteria.register(MOD_ID + "/get_ring_htd", new GainSoulRingCriterion());
+
+
 	@Override
 	public void onInitialize() {
 		// This code runs as soon as Minecraft is in a mod-load-ready state.
@@ -54,11 +69,12 @@ public class MCDuro implements ModInitializer {
 		ModItems.registerModItems();
 		ModItemGroup.registerModItemGroup();
 
-		ModKeyBinds.registerKeyBinds();
 
 		ModBlockEntities.registerBlockEntities();
+		ModEffects.registerModEffects();
 
 		ModWorldGeneration.generateModWorldGen();
+		ModGameRules.registerGameRules();
 
 		registerCommands();
 

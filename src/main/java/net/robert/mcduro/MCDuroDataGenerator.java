@@ -19,6 +19,7 @@ public class MCDuroDataGenerator implements DataGeneratorEntrypoint {
 		pack.addProvider(ModRecipesProvider::new);
 		pack.addProvider(ModBlockTagProvider::new);
 		pack.addProvider(ModItemTagProvider::new);
+		pack.addProvider(ModAdvancementsProvider::new);
 	}
 	@Override
 	public void buildRegistry(RegistryBuilder registryBuilder) {

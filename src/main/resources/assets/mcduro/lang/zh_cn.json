@@ -1,3 +1,9 @@
 {
-  "smith_smelting": "锻造熔炉"
+  "smith_smelting": "锻造熔炉",
+  "gamerule.limitSoulHostileSpawn": "限制魂兽生成",
+  "itemGroup.mcduro_group1": "MC斗罗",
+  "tips.closeWuhun": "武魂关闭",
+  "wuhun.fengHuang": "邪火凤凰",
+  "wuhun.xiangChang": "香肠",
+  "wuhun.liuLi": "九宝琉璃塔"
 }

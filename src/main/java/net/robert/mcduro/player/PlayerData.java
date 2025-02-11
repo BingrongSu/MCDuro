@@ -26,7 +26,8 @@ public class PlayerData {
     public HashMap<String, Boolean> blProperties = new HashMap<>();
     public HashMap<UUID, Long> openWuHunTicks = new HashMap<>();            // 玩家打开武魂的时刻
     public HashMap<UUID, String> allys = new HashMap<>();                   // 玩家的盟友
-    public PlayerEntity lastAttacker = null;                                // 上一个攻击此玩家的玩家UUID
+    public PlayerEntity lastAttacker = null;                                // 上一个攻击此玩家的玩家
+    public Map<String, List<Long>> statusEffects = new HashMap<>();       // 玩家拥有的魂技相关状态效果
 
     private final List<String> standardWuHun = List.of(                     // 标准武魂类型
                                                         "liuLi",
@@ -39,7 +40,7 @@ public class PlayerData {
             boolean result = false;
             hunLi += amount;
             if (hunLi <= 0) {
-                hunLi += amount;
+                hunLi = 0;
             } else if (hunLi > maxHunLi) {
                 hunLi = maxHunLi;
             } else {
@@ -63,26 +64,41 @@ public class PlayerData {
 
     public boolean increaseMaxHunLi(int amount, PlayerEntity player) {
         World world = player.getWorld();
+        MinecraftServer server = world.getServer();
+        assert server != null;
+        ServerPlayerEntity serverPlayer = server.getPlayerManager().getPlayer(player.getUuid());
+        assert serverPlayer != null;
         if (!world.isClient && amount != 0) {
-            maxHunLi += amount;
-            if (maxHunLi < 0) {
-                maxHunLi = 0;
-                return false;
-            }
-            if (maxHunLi >= Helper.level2HunLi(hunLiLevel)) {
-                maxHunLi = Helper.level2HunLi(hunLiLevel);
-                return false;
-            }
+//            maxHunLi += amount;
+//            if (maxHunLi < 0) {
+//                maxHunLi = 0;
+//                return false;
+//            }
+//            if (maxHunLi >= Helper.level2HunLi(hunLiLevel+1)) {
+//                if (hunLiLevel % 10 == 0) {
+//                    maxHunLi -= amount;
+//                    System.out.println("到达瓶颈，无法突破！");
+//                    return false;
+//                }
+//                else {
+//                    hunLiLevel ++;
+//                    PacketByteBuf buf = PacketByteBufs.create();
+//                    buf.writeInt(hunLiLevel);
+//                    ServerPlayNetworking.send(serverPlayer, ModEvents.SET_HUN_LI_LEVEL, buf);
+//                    System.out.println("成功突破到下一级! ");
+//                }
+//            }
+            maxHunLi = Helper.increaseMaxHunLi(maxHunLi, amount, player);
+            hunLiLevel = Helper.hunLi2level(maxHunLi);
             // 向客户端发送数据
-            MinecraftServer server = world.getServer();
-            PacketByteBuf data = PacketByteBufs.create();
-            data.writeInt(maxHunLi);
+            PacketByteBuf data1 = PacketByteBufs.create();
+            data1.writeInt(maxHunLi);
+            PacketByteBuf data2 = PacketByteBufs.create();
+            data2.writeInt(hunLiLevel);
             System.out.println("Server -> Max Hun Li Set To: " + maxHunLi);
-            assert server != null;
-            ServerPlayerEntity playerEntity = server.getPlayerManager().getPlayer(player.getUuid());
             server.execute(() -> {
-                assert playerEntity != null;
-                ServerPlayNetworking.send(playerEntity, ModEvents.SET_MAX_HUN_LI, data);
+                ServerPlayNetworking.send(serverPlayer, ModEvents.SET_MAX_HUN_LI, data1);
+                ServerPlayNetworking.send(serverPlayer, ModEvents.SET_HUN_LI_LEVEL, data2);
             });
             return true;
         }
@@ -122,6 +138,7 @@ public class PlayerData {
                 PacketByteBuf data3 = PacketByteBufs.create();
                 data3.writeInt(maxHunLi);
                 ServerPlayNetworking.send((ServerPlayerEntity) player, ModEvents.SET_MAX_HUN_LI, data3);
+                MCDuro.GAIN_WUHUN.trigger((ServerPlayerEntity) player);
             });
         }
     }
@@ -157,17 +174,60 @@ public class PlayerData {
 
     public void addWuHun(PlayerEntity player, String name) {
         if (!player.getWorld().isClient) {
+            MCDuro.GAIN_WUHUN.trigger((ServerPlayerEntity) player);
             wuHun.put(name, new ArrayList<>());
+            switch (name) {
+                case "fengHuang":
+                    MCDuro.GAIN_WUHUN_FH.trigger((ServerPlayerEntity) player);
+            }
         }
         syncWuHun(player);
     }
 
     public void addRing(PlayerEntity player, double year) {
-        if (!player.getWorld().isClient && wuHun.get(openedWuHun).size() < 9) {
-            wuHun.get(openedWuHun).add(List.of(year, 0d));
-            syncWuHun(player);
+        if (!player.getWorld().isClient) {
+            boolean stuck = Helper.hunLi2level(maxHunLi) % 10 == 9 && Helper.hunLi2level(maxHunLi+1) % 10 == 0;
+            if (stuck && wuHun.get(openedWuHun).size() < 9) {
+                wuHun.get(openedWuHun).add(List.of(year, 0d));
+                syncWuHun(player);
+                maxHunLi += 1;
+                hunLiLevel += 1;
+                PacketByteBuf dat1 = PacketByteBufs.create();
+                dat1.writeInt(maxHunLi);
+                PacketByteBuf dat2 = PacketByteBufs.create();
+                dat2.writeInt(hunLiLevel);
+
+                World world = player.getWorld();
+                MinecraftServer server = world.getServer();
+                assert server != null;
+                ServerPlayerEntity serverPlayer = server.getPlayerManager().getPlayer(player.getUuid());
+                assert serverPlayer != null;
+                server.execute(() -> {
+                    ServerPlayNetworking.send(serverPlayer, ModEvents.SET_MAX_HUN_LI, dat1);
+                    ServerPlayNetworking.send(serverPlayer, ModEvents.SET_HUN_LI_LEVEL, dat2);
+                });
+                if (year < 100) {
+                    MCDuro.GET_RING_TEN_CRI.trigger(serverPlayer);
+                } else if (year < 1000) {
+                    MCDuro.GET_RING_HUD_CRI.trigger(serverPlayer);
+                } else if (year < 10000) {
+                    MCDuro.GET_RING_THD_CRI.trigger(serverPlayer);
+                } else if (year < 100000) {
+                    MCDuro.GET_RING_TTD_CRI.trigger(serverPlayer);
+                } else if (year < 1000000) {
+                    MCDuro.GET_RING_HTD_CRI.trigger(serverPlayer);
+                }
+//                for (int i = 0; i < wuHun.size() + 1; i++) {
+//                    Runnable task = () -> {
+//                        switchWuHun(player);
+//                        System.out.println("Auto Switch");
+//                    };
+//                    MCDuro.scheduledTask(task, 2L * i + 1);
+//                }
+            }
         }
     }
+    // TODO 02/08/2025 吸收魂环的成就提示
 
     public void switchWuHun(PlayerEntity player) {
         if (player.getWorld().isClient) {
@@ -176,10 +236,13 @@ public class PlayerData {
                 List<String> wuHuns = new ArrayList<>(wuHun.keySet());
                 if (openedWuHun.equals("null")) {
                     openedWuHun = wuHuns.get(0);
+                    player.sendMessage(Text.translatable("wuhun." + openedWuHun), true);
                 } else if (openedWuHun.equals(wuHuns.get(wuHuns.size() - 1))) {
                     openedWuHun = "null";
+                    player.sendMessage(Text.translatable("tips.closeWuhun"), true);
                 } else {
                     openedWuHun = wuHuns.get(wuHuns.indexOf(openedWuHun) + 1);
+                    player.sendMessage(Text.translatable("wuhun." + openedWuHun), true);
                 }
                 syncOpenedWuHun(player);
             }
@@ -247,4 +310,39 @@ public class PlayerData {
     public void refreshAttacker(PlayerEntity player) {
         lastAttacker = player;
     }
+
+    public void addStatusEffect(PlayerEntity player, String effect, List<Long> data) {
+        if (!player.getWorld().isClient) {
+            statusEffects.put(effect, data);
+            System.out.println("Server -> Add status effect %s%s to player %s.".formatted(effect, data, player.getName().getString()));
+            syncStatusEffects(player);
+        }
+    }
+
+    public void removeStatusEffect(PlayerEntity player, String effect) {
+        if (!player.getWorld().isClient) {
+            statusEffects.remove(effect);
+            syncStatusEffects(player);
+        }
+    }
+
+    public void syncStatusEffects(PlayerEntity player) {
+        if (!player.getWorld().isClient) {
+            System.out.println("Server -> Original status effects: %s".formatted(statusEffects));
+
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeInt(statusEffects.size());
+            statusEffects.forEach((name, list) -> {
+                buf.writeString(name);
+                buf.writeLongArray(list.stream().mapToLong(Long::longValue).toArray());
+            });
+            MinecraftServer server = player.getServer();
+            assert server != null;
+            server.execute(() -> {
+                ServerPlayNetworking.send((ServerPlayerEntity) player, ModEvents.SYNC_STATUS_EFFECTS, buf);
+            });
+        }
+    }
+    // TODO 02/09/2025 玩家使用魂技时魂环变化
+    // TODO 02/09/2025 玩家使用技能切换 -> 魂环的显示和消失、HUD快捷栏显示
 }

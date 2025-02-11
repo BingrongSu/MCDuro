@@ -10,14 +10,16 @@ public class MathTest {
     public static void main(String[] args) {
         Helper.initialize();
         Scanner input = new Scanner(System.in);
-        for (int i = 1; i < 99; i++) {
+        for (int i = 1; i <= 100; i++) {
             System.out.print(i);
             System.out.print("   ");
-            System.out.print(Helper.level2HunLi(i));
-            System.out.print("   ");
-            System.out.println((Helper.level2HunLi(i + 1) - Helper.level2HunLi(i))/144000d);
+            System.out.println(Helper.level2HunLi(i));
+//            System.out.print("   ");
+//            System.out.println((Helper.level2HunLi(i + 1) - Helper.level2HunLi(i))/144000d);
         }
-//
+
+//        System.out.println(Helper.increaseMaxHunLi(20000000, 500000000));
+
 //        int ans = 0;
 //        for (int i = 0; i < 144000; i++) {
 //            ans += Helper.naturalIncrease(94);

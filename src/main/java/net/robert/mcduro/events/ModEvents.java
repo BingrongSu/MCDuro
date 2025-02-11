@@ -1,8 +1,13 @@
 package net.robert.mcduro.events;
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsage;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTables;
@@ -11,6 +16,7 @@ import net.minecraft.loot.provider.number.BinomialLootNumberProvider;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TypedActionResult;
 import net.robert.mcduro.MCDuro;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
@@ -26,6 +32,7 @@ public class ModEvents {
     public static Identifier OPEN_WU_HUN = new Identifier(MCDuro.MOD_ID, "events.open_wu_hun");
     public static Identifier GET_MOB_YEAR = new Identifier(MCDuro.MOD_ID, "events.get_mob_year");
     public static Identifier USE_SOUL_SKILL = new Identifier(MCDuro.MOD_ID, "events.use_soul_skill");
+    public static Identifier SYNC_STATUS_EFFECTS = new Identifier(MCDuro.MOD_ID, "events.sync_status_effects");
 
     private static final Identifier COAL_ORE_LOOT_TABLE_ID = Blocks.COAL_ORE.getLootTableId();
     private static final Identifier ZOMBIE_LOOT_TABLE_ID = new Identifier("minecraft", "entities/zombie");
@@ -54,7 +61,5 @@ public class ModEvents {
                 builder.pool(poolBuilder);
             }
         }));
-
-
     }
 }

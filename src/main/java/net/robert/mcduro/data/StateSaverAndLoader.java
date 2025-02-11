@@ -47,7 +47,7 @@ public class StateSaverAndLoader extends PersistentState {
 
         // 当第一次调用了方法 'getOrCreate' 后，它会创建新的 'StateSaverAndLoader' 并将其存储于  'PersistentStateManager' 中。
         //  'getOrCreate' 的后续调用将本地的 'StateSaverAndLoader' NBT 传递给 'StateSaverAndLoader::createFromNbt'。
-        StateSaverAndLoader state = persistentStateManager.getOrCreate(type, (new Identifier(MCDuro.MOD_ID, "server_data").toString()));
+        StateSaverAndLoader state = persistentStateManager.getOrCreate(type, "server_data");
 
         // 若状态未标记为脏(dirty)，当 Minecraft 关闭时， 'writeNbt' 不会被调用，相应地，没有数据会被保存。
         // 从技术上讲，只有在事实上发生数据变更时才应当将状态标记为脏(dirty)。

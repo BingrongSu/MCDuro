@@ -1,10 +1,8 @@
 package net.robert.mcduro.events;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -18,6 +16,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.robert.mcduro.MCDuro;
 import net.robert.mcduro.data.ServerData;
+import net.robert.mcduro.effects.ModEffects;
+import net.robert.mcduro.game.ModGameRules;
+import net.robert.mcduro.game.Modifiers;
 import net.robert.mcduro.math.Helper;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
@@ -46,7 +47,7 @@ public class ModServerEvents {
             data.writeInt(playerData.hunLiLevel);
 
             ServerPlayerEntity player = handler.player;
-            player.sendMessage(Text.of("Initialized Server Player: " + player.getName().getString()));
+            player.sendMessage(Text.of("Initialized Server Player: " + player.getName().toString()));
             player.sendMessage(Text.of("Hun Li: " + playerData.hunLi));
             player.sendMessage(Text.of("Max Hun Li: " + playerData.maxHunLi));
             player.sendMessage(Text.of("Hun Li Level: " + playerData.hunLiLevel));
@@ -70,7 +71,7 @@ public class ModServerEvents {
                 if (playerData.maxHunLi > 0) {
                     if (playerData.hunLi == 0) {
                         if (player.getStatusEffect(StatusEffects.BLINDNESS) == null) {
-                            player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 999999999, 2, false, false, false));
+                            player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, Integer.MAX_VALUE, 2, false, false, false));
                         }
                         player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20, 2, false, false, false));
                         player.addStatusEffect(new StatusEffectInstance(StatusEffects.MINING_FATIGUE, 20, 2, false, false, false));
@@ -101,18 +102,23 @@ public class ModServerEvents {
             serverData = net.robert.mcduro.data.StateSaverAndLoader.getServerState(serverWorld.getServer());
             if (entity instanceof HostileEntity hostile) {
                 int randomYear = 0;
-                if (serverWorld.getBiome(hostile.getBlockPos()).isIn(BiomeTags.IS_FOREST) || serverWorld.getBiome(hostile.getBlockPos()).isIn(BiomeTags.IS_JUNGLE)) {
+                if (!serverWorld.getGameRules().getBoolean(ModGameRules.LIMIT_SOUL_HOSTILE_SPAWN)
+                        || (serverWorld.getBiome(hostile.getBlockPos()).isIn(BiomeTags.IS_FOREST)
+                        || serverWorld.getBiome(hostile.getBlockPos()).isIn(BiomeTags.IS_JUNGLE)
+                        || serverWorld.getBiome(hostile.getBlockPos()).isIn(BiomeTags.ANCIENT_CITY_HAS_STRUCTURE))) {
                     randomYear = (int) (Math.random() * 3000);
                 }
                 // 随机生成 year 值（0~3000）
                 boolean bl = serverData.appendMobIfAbsent(hostile.getUuid(), randomYear);
-                if (bl) {
+                if (bl && randomYear > 20) {
                     // Modify Attack Damage
-                    Objects.requireNonNull(hostile.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)).setBaseValue(100);
-                    // 修改最大生命值（血量翻倍）
-                    Objects.requireNonNull(hostile.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)).setBaseValue(hostile.getHealth() * 2);
-                    hostile.setHealth(hostile.getHealth() * 2);
-                    System.out.println("Server: Modified Hostile's Health" + hostile.getHealth());
+                    Objects.requireNonNull(hostile.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE)).setBaseValue(randomYear/5f);
+                    // 修改最大生命值
+                    Objects.requireNonNull(hostile.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)).setBaseValue(randomYear);
+                    hostile.setHealth(randomYear);
+
+//                    Modifiers.modModifyMobHealth(hostile);
+                    System.out.println("Server -> Spawned a soul hostile with health: " + hostile.getHealth() + ", and year: " + randomYear);
                 }
             }
         }));
@@ -128,7 +134,7 @@ public class ModServerEvents {
         }));
 
         ServerTickEvents.END_SERVER_TICK.register((server) -> {
-            if (server.getOverworld().getTime() % 200 == 0) {
+            if (server.getOverworld().getTime() % 400 == 0) {
                 serverData.deleteNullMobs(server);
             }
         });
@@ -142,9 +148,44 @@ public class ModServerEvents {
                     switch (n) {
                         case 0:
                             FHSkills.Skill1(player, server.getOverworld(), power);
+                            break;
+                        case 1:
+                            FHSkills.Skill2(player, power);
                     }
+                    break;
+                case "xiangChang":
+                    break;
             }
         }));
+
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+                PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+                for (String name : playerData.statusEffects.keySet()) {
+                    playerData.statusEffects.get(name).set(0, playerData.statusEffects.get(name).get(0) - 1L);
+                    if (playerData.statusEffects.get(name).get(0) <= 0) {
+                        playerData.removeStatusEffect(player, name);
+                    } else {
+                        switch (name) {
+                            case "FHSkill2":
+                                player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH2, 10, 1, true, true, true));
+                                break;
+                            case "FHSkill3":
+                                player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH3, 10, 1, true, true, true));
+                                break;
+                            case "FHSkill7":
+                                player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH7, 10, 1, true, true, true));
+                                break;
+                            case "FHSkill8":
+                                player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH8, 10, 1, true, true, true));
+                                break;
+                        }
+                    }
+                }
+            }
+        });
     }
-    // TODO 01/11/2025 魂兽生成在丛林区域，后期添加生物群系-星斗大森林
+    // TODO 01/11/2025 后期添加生物群系-星斗大森林
+    // TODO 02/09/2025 魂兽生命值突破1024限制
+    // TODO 02/09/2025 魂兽掉落物、经验值等
 }

@@ -32,6 +32,20 @@ public class ModModelsProvider extends FabricModelProvider {
         itemModelGenerator.register(ModItems.SHEN_SILVER_NUGGET, Models.GENERATED);
 
         itemModelGenerator.register(ModItems.WU_HUN_FENG_HUANG, Models.GENERATED);
+        itemModelGenerator.register(ModItems.HUNLI_PILL_L1, Models.GENERATED);
+        itemModelGenerator.register(ModItems.HUNLI_PILL_L2, Models.GENERATED);
+        itemModelGenerator.register(ModItems.HUNLI_PILL_L3, Models.GENERATED);
+        itemModelGenerator.register(ModItems.HUNLI_PILL_L4, Models.GENERATED);
+        itemModelGenerator.register(ModItems.HUNLI_PILL_L5, Models.GENERATED);
+        itemModelGenerator.register(ModItems.HUNLI_PILL_L6, Models.GENERATED);
+        itemModelGenerator.register(ModItems.HUNLI_PILL_L7, Models.GENERATED);
+        itemModelGenerator.register(ModItems.MAX_HUNLI_PILL_L1, Models.GENERATED);
+        itemModelGenerator.register(ModItems.MAX_HUNLI_PILL_L2, Models.GENERATED);
+        itemModelGenerator.register(ModItems.MAX_HUNLI_PILL_L3, Models.GENERATED);
+        itemModelGenerator.register(ModItems.MAX_HUNLI_PILL_L4, Models.GENERATED);
+        itemModelGenerator.register(ModItems.MAX_HUNLI_PILL_L5, Models.GENERATED);
+        itemModelGenerator.register(ModItems.MAX_HUNLI_PILL_L6, Models.GENERATED);
+        itemModelGenerator.register(ModItems.MAX_HUNLI_PILL_L7, Models.GENERATED);
     }
 
 }

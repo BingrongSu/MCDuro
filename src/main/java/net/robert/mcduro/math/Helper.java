@@ -1,6 +1,8 @@
 package net.robert.mcduro.math;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.robert.mcduro.MCDuro;
 
 import java.util.ArrayList;
@@ -11,6 +13,9 @@ public class Helper {
     public static final List<Integer> list = new ArrayList<>();
 
     public static int level2HunLi(Integer level) {
+        if (level == 100) {
+            return 30000000;
+        }
         double amount = 1000000d*level*level/(980100d - 9801d*level);
         if (level < 90) {
             return (int) amount;
@@ -23,12 +28,12 @@ public class Helper {
         if (amount == 0) {
             return 0;
         }
-        for (int i = 0; i < 98; i++) {
+        for (int i = 0; i < 99; i++) {
             if (list.get(i) <= amount && amount < list.get(i+1)) {
                 return i + 1;
             }
         }
-        return 99;
+        return 100;
     } // Checked
 
     public static int naturalIncrease(int level) {
@@ -73,6 +78,42 @@ public class Helper {
         return ans;
     } // checked
 
+    public static int openDrain(int level) {
+        int ans, base, bonus;
+        double value;
+        if (level < 90) {
+            value = 11000 * Math.pow(level, 0.9) / (5880600d - 58806d * level);
+        } else if (level < 99) {
+            value = 15000 * Math.pow(level, 0.8) / (5880600d - 58806d * level) * Math.pow(1+(level-89)/10d, (level/10d)-7);
+        } else {
+            return 0;
+        }
+        base = (int) value;
+        bonus = Math.random() <= value - base ? 1 : 0;
+        ans = base + bonus;
+        return ans;
+    }
+
+    public static int increaseMaxHunLi(int origin, int increment, PlayerEntity player) {
+        int ans = origin;
+        while (increment > 0) {
+            if (ans + increment >= level2HunLi(hunLi2level(ans) + 1)) {
+                if ((hunLi2level(ans) + 1) % 10 == 0) {
+                    ans = level2HunLi(hunLi2level(ans) + 1) - 1;
+                    increment = 0;
+                    MCDuro.GET_STUCK_CRITERION.trigger((ServerPlayerEntity) player);
+                } else {
+                    increment -= level2HunLi(hunLi2level(ans) + 1) - ans;
+                    ans = level2HunLi(hunLi2level(ans) + 1);
+                }
+            } else {
+                ans += increment;
+                increment = 0;
+            }
+        }
+        return ans;
+    }   // Checked
+
     /**
      * @param seed 随机种子
      * @param mean 期望值，中心点
@@ -111,5 +152,6 @@ public class Helper {
         for (int i = 0; i < 99; i++) {
             list.add(level2HunLi(i+1));
         }
+        list.add(30000000);     // 100级需要的魂力：3000万
     }
 }
