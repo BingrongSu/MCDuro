@@ -95,6 +95,16 @@ public class ModServerEvents {
             String name = buf.readString();
             playerData.setOpenedWuHun(name);
             System.out.println("Server-> Opened Wu Hun: " + name);
+            // Broadcast to others
+            PacketByteBuf data = PacketByteBufs.create();
+            data.writeUuid(player.getUuid());
+            data.writeString(name);
+            for (ServerPlayerEntity serverPlayer : server.getPlayerManager().getPlayerList()) {
+                if (!serverPlayer.equals(player)) {
+                    ServerPlayNetworking.send(serverPlayer, ModEvents.SYNC_PLAYERS_WUHUN, data);
+                    System.out.println("Server -> Send %s's showed wuhun to %s's client.".formatted(player.getName().getString(), serverPlayer.getName().getString()));
+                }
+            }
         }));
 
         ServerEntityEvents.ENTITY_LOAD.register(((entity, serverWorld) -> {

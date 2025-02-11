@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class ModClientEvents {
     public static PlayerData playerData = new PlayerData();
     public static HashMap<UUID, List<Double>> showedYears = new HashMap<>();    // 所有进入过服务器的玩家当前要显示的魂环
+    public static HashMap<UUID, String> showedWuhun = new HashMap<>();          // 所有其他玩家
     public static List<Double> chargeVal = List
             .of(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d);                            // 玩家使用魂技的蓄力值
     private static final double chargeV = 1 / 80d;                              // 蓄力速率
@@ -214,6 +215,10 @@ public class ModClientEvents {
                 playerData.statusEffects.put(buf.readString(), Arrays.stream(buf.readLongArray()).boxed().collect(Collectors.toList()));
             }
             System.out.println("Client -> Synced status effects: %s".formatted(playerData.statusEffects));
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(ModEvents.SYNC_PLAYERS_WUHUN, (client, handler, buf, sender) -> {
+            showedWuhun.put(buf.readUuid(), buf.readString());
         });
 
         // TODO 01/11/2025 魂技蓄力时间：根据修为-修为越高时间越短
