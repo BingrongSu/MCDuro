@@ -111,12 +111,16 @@ public class FHSkills {
     // TODO 02/09/2025 魂核的凝聚、魂核增幅魂力恢复
 
     // 3. 凤翼天翔
-    public static void Skill3(PlayerEntity player) {
-        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-
-        if (((ServerPlayerEntity) player).interactionManager.getGameMode().isSurvivalLike()) {
-            player.getAbilities().allowFlying = true;
-            player.sendAbilitiesUpdate();
+    public static void Skill3(PlayerEntity player, double power) {
+        if (!player.getWorld().isClient) {
+            PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+            double amp = 600 + (6000-2400) * power;
+            Long duration = (long) (amp * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(2).get(0))) * (1 + (0.05+(0.2-0.05)*power)));
+            playerData.addStatusEffect(player, "FHSkill3", new ArrayList<>());
+            if (((ServerPlayerEntity) player).interactionManager.getGameMode().isSurvivalLike()) {
+                player.getAbilities().allowFlying = true;
+                player.sendAbilitiesUpdate();
+            }
         }
     }
 //
