@@ -1,5 +1,5 @@
-// 1.20.2	2025-02-11T10:34:52.1552948	MC Duro/World Gen
-8af8920266416cb85ea1258266e0b9e562017c47 data\mcduro\worldgen\placed_feature\nether_shen_silver_ore_placed.json
-fc85d657a04f425547608db9ee557cefcf7bf86c data\mcduro\worldgen\configured_feature\nether_shen_silver_ore.json
-78562e5d2ea8f606a468de9856053b7b32b14466 data\mcduro\worldgen\placed_feature\shen_silver_ore_placed.json
-e512e18d4264244a90cb6a7d54283903b2d6a1f4 data\mcduro\worldgen\configured_feature\shen_silver_ore.json
+// 1.20.2	2025-02-11T23:32:37.605085	MC Duro/World Gen
+e512e18d4264244a90cb6a7d54283903b2d6a1f4 data/mcduro/worldgen/configured_feature/shen_silver_ore.json
+8af8920266416cb85ea1258266e0b9e562017c47 data/mcduro/worldgen/placed_feature/nether_shen_silver_ore_placed.json
+fc85d657a04f425547608db9ee557cefcf7bf86c data/mcduro/worldgen/configured_feature/nether_shen_silver_ore.json
+78562e5d2ea8f606a468de9856053b7b32b14466 data/mcduro/worldgen/placed_feature/shen_silver_ore_placed.json

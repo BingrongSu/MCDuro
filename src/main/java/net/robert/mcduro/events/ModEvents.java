@@ -1,28 +1,22 @@
 package net.robert.mcduro.events;
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsage;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTables;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.provider.number.BinomialLootNumberProvider;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.TypedActionResult;
 import net.robert.mcduro.MCDuro;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
 
 public class ModEvents {
     public static Identifier SYNC_SHOWED_YEARS =  new Identifier(MCDuro.MOD_ID, "events.sync_showed_years");
+    public static Identifier SYNC_PLAYERS_WUHUN =  new Identifier(MCDuro.MOD_ID, "events.sync_players_wuhun");
     public static Identifier INIT_SYNC = new Identifier(MCDuro.MOD_ID, "events.initial_sync");
     public static Identifier SET_HUN_LI = new Identifier(MCDuro.MOD_ID, "events.set_hun_li");
     public static Identifier SET_HUN_LI_LEVEL = new Identifier(MCDuro.MOD_ID, "events.set_hun_li_level");

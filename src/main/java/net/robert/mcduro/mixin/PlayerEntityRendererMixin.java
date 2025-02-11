@@ -80,7 +80,13 @@ public class PlayerEntityRendererMixin {
             itemRenderer.renderItem(suitableStack(currentWuHun.get(j)), ModelTransformationMode.HEAD, lightLevel, OverlayTexture.DEFAULT_UV, matricesList.get(j), vertexConsumerProvider, player.getWorld(), 1);
             matricesList.get(j).pop();
         }
-        if (playerData.openedWuHun.equals("fengHuang")) {
+        String openedWuhun;
+        if (player.equals(MinecraftClient.getInstance().player)) {
+            openedWuhun = playerData.openedWuHun;
+        } else {
+            openedWuhun = ModClientEvents.showedWuhun.getOrDefault(player.getUuid(), "null");
+        }
+        if (openedWuhun.equals("fengHuang")) {
             wuHunMatrices.push();
             wuHunMatrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(player.bodyYaw));
             wuHunMatrices.translate(0, 0.2f, -0.7);
