@@ -1,9 +1,9 @@
-// 1.20.2	2025-02-10T21:52:46.104935	MC Duro/Advancements
-8b27f0c91b7cd7bf24b395793894b473efea3af1 data/minecraft/advancements/mcduro/get_ring_hud.json
-2bca49eecdc527a68ed0cfac400eca005408c05e data/minecraft/advancements/mcduro/get_ring_ten.json
-3d0235a2ad7328a128cb2cde38af20c6f13e2ebf data/minecraft/advancements/mcduro/get_ring_ttd.json
-928de5d8e428317c11e2f7c0c056955b85694ebf data/minecraft/advancements/mcduro/get_ring_htd.json
-648ffac73f1a1bd3fb283fd82f63eee2d025e5bd data/minecraft/advancements/mcduro/jue_xing.json
-3fb5f8982193dae6baa152141f45c58586f59a78 data/minecraft/advancements/mcduro/get_ring_thd.json
-b4cb88196a95cee8815c7183711185f05768c4d6 data/minecraft/advancements/mcduro/gain_fh.json
-9b91eefcf505b83bc853e99c5f469c6daa79c6a8 data/minecraft/advancements/mcduro/get_stuck.json
+// 1.20.2	2025-02-11T10:34:52.1552948	MC Duro/Advancements
+8b27f0c91b7cd7bf24b395793894b473efea3af1 data\minecraft\advancements\mcduro\get_ring_hud.json
+2bca49eecdc527a68ed0cfac400eca005408c05e data\minecraft\advancements\mcduro\get_ring_ten.json
+b4cb88196a95cee8815c7183711185f05768c4d6 data\minecraft\advancements\mcduro\gain_fh.json
+9b91eefcf505b83bc853e99c5f469c6daa79c6a8 data\minecraft\advancements\mcduro\get_stuck.json
+3fb5f8982193dae6baa152141f45c58586f59a78 data\minecraft\advancements\mcduro\get_ring_thd.json
+648ffac73f1a1bd3fb283fd82f63eee2d025e5bd data\minecraft\advancements\mcduro\jue_xing.json
+3d0235a2ad7328a128cb2cde38af20c6f13e2ebf data\minecraft\advancements\mcduro\get_ring_ttd.json
+928de5d8e428317c11e2f7c0c056955b85694ebf data\minecraft\advancements\mcduro\get_ring_htd.json

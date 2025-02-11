@@ -84,7 +84,7 @@ public class PlayerEntityRendererMixin {
             wuHunMatrices.push();
             wuHunMatrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(player.bodyYaw));
             wuHunMatrices.translate(0, 0.2f, -0.7);
-            wuHunMatrices.scale(2f, 2f, 0.2f);
+            wuHunMatrices.scale(2f, 2f, 0.01f);
             Vec3d yawVec = getPlayerBodyFacingVector(player.bodyYaw);
 //            wuHunMatrices.translate(0, 0, -4);
             itemRenderer.renderItem(new ItemStack(ModItems.WU_HUN_FENG_HUANG), ModelTransformationMode.HEAD, lightLevel, OverlayTexture.DEFAULT_UV, matrices, vertexConsumerProvider, player.getWorld(), 1);
