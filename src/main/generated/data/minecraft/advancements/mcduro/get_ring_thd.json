@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:mcduro/get_stuck",
+  "criteria": {
+    "get_ring_thd": {
+      "trigger": "minecraft:mcduro/get_ring_thd"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "color": "light_purple",
+      "translate": "advancements.get_ring_thd.description"
+    },
+    "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "item": "mcduro:soul_ring_thd"
+    },
+    "show_toast": true,
+    "title": {
+      "color": "light_purple",
+      "translate": "advancements.get_ring_thd.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_ring_thd"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

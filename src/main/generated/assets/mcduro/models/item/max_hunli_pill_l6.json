@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mcduro:item/max_hunli_pill_l6"
+  }
+}

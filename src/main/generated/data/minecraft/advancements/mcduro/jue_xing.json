@@ -1,0 +1,31 @@
+{
+  "criteria": {
+    "gain_wuhun": {
+      "trigger": "minecraft:mcduro/gain_wuhun"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "color": "aqua",
+      "translate": "advancements.jueXing.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mcduro:jx_ball"
+    },
+    "show_toast": true,
+    "title": {
+      "color": "gold",
+      "translate": "advancements.jueXing.title"
+    }
+  },
+  "requirements": [
+    [
+      "gain_wuhun"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

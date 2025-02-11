@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:mcduro/jue_xing",
+  "criteria": {
+    "get_stuck": {
+      "trigger": "minecraft:mcduro/get_stuck"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "color": "red",
+      "translate": "advancements.get_stuck.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "mcduro:max_hunli_pill_l1"
+    },
+    "show_toast": true,
+    "title": {
+      "color": "gold",
+      "translate": "advancements.get_stuck.title"
+    }
+  },
+  "requirements": [
+    [
+      "get_stuck"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

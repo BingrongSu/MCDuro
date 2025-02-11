@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:mcduro/jue_xing",
+  "criteria": {
+    "gain_wuhun_fh": {
+      "trigger": "minecraft:mcduro/gain_wuhun_fh"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "description": {
+      "color": "red",
+      "translate": "advancements.wuHun_fengHuang.description"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "mcduro:wu_hun_feng_huang"
+    },
+    "show_toast": true,
+    "title": {
+      "color": "gold",
+      "translate": "advancements.wuHun_fengHuang.title"
+    }
+  },
+  "requirements": [
+    [
+      "gain_wuhun_fh"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
