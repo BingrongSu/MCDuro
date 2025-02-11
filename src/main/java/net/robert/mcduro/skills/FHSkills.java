@@ -32,6 +32,7 @@ public class FHSkills {
         List<Entity> tmp = new ArrayList<>();
         double dDistance = .25;
         double distance = (playerData.hunLiLevel / 1.2d) * (1 + 0.05+(0.2-0.05)*power);
+        distance = rangeBoosted(distance, player, playerData);
         double input = playerData.maxHunLi * (0.05+(0.2-0.05)*power);
         int cross = 0;
 
@@ -275,17 +276,21 @@ public class FHSkills {
     private static float damageBoosted(float damage, PlayerEntity player, PlayerData playerData) {
         if (playerData.statusEffects.containsKey("FHSkill2")) {
             damage *= 1.3f;
-            System.out.println("Skill Boost FH2");
+            System.out.println("Skill Damage Boost FH2");
+        }
+        if (playerData.statusEffects.containsKey("FHSkill3")) {
+            damage *= 1.2f;
+            System.out.println("Skill Damage Boost FH3");
         }
 
         return damage;
     }
 
     private static double rangeBoosted(double range, PlayerEntity player, PlayerData playerData) {
-//        if (player.hasStatusEffect(ModEffects.SkillFH2)) {
-//            range *= 1d + (Math.log10(playerData.years.get("fengHuang").get(1)) / 10d);
-//            player.sendMessage(Text.of("增幅2!"));
-//        }
+        if (playerData.statusEffects.containsKey("FHSkill3")) {
+            range *= 1.2f;
+            System.out.println("Skill Range Boost FH3");
+        }
 //        if (player.hasStatusEffect(ModEffects.SkillFH3)) {
 //            range *= 1d + (Math.log10(playerData.years.get("fengHuang").get(2)) / 10d);
 //            player.sendMessage(Text.of("增幅3!"));
