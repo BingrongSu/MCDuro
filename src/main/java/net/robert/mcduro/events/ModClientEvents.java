@@ -136,7 +136,7 @@ public class ModClientEvents {
 //            }
 //            if (!playerData.openedWuHun.equals("null") && readyForSkill) {
             if (!playerData.openedWuHun.equals("null")) {
-                List<List<Double>> wuHunData = playerData.wuHun.get(playerData.openedWuHun);
+                List<List<Double>> wuHunData = playerData.wuHun.getOrDefault(playerData.openedWuHun, new ArrayList<>());
                 for (int i = 0; i < wuHunData.size(); i++) {
                     boolean isPressed = GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_1 + i) == GLFW.GLFW_PRESS;
                     boolean hasPower = (int) (playerData.maxHunLi * (0.05 + (0.2-0.05) * (wuHunData.get(i).get(1) - thresholdVal)) + 1) <= playerData.hunLi;

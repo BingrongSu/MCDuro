@@ -181,7 +181,8 @@ public class ModServerEvents {
                         player.sendAbilitiesUpdate();
                     }
                 }
-                for (String name : playerData.statusEffects.keySet()) {
+                Set<String> effects = new HashSet<>(playerData.statusEffects.keySet());
+                for (String name : effects) {
                     playerData.statusEffects.get(name).set(0, playerData.statusEffects.get(name).get(0) - 1L);
                     if (ModEffects.selfEnhancing.contains(name)) {
                         if (playerData.openedWuHun.equals("null")) {
