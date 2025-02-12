@@ -56,16 +56,6 @@ public class ModServerEvents {
                 ServerPlayNetworking.send(handler.getPlayer(), ModEvents.INIT_SYNC, data);
                 playerData.syncWuHun(player);
                 // Sync Showed years
-                for (ServerPlayerEntity otherPlayer : players) {
-                    PlayerData otherPlayerData = StateSaverAndLoader.getPlayerState(otherPlayer);
-                    PacketByteBuf buf = PacketByteBufs.create();
-                    buf.writeUuid(otherPlayer.getUuid());
-                    buf.writeLong(otherPlayerData.openWuHunTicks.get(otherPlayer.getUuid()));
-                    buf.writeInt(otherPlayerData.wuHun.getOrDefault(otherPlayerData.openedWuHun, new ArrayList<>()).size());
-                    otherPlayerData.wuHun.getOrDefault(otherPlayerData.openedWuHun, new ArrayList<>()).forEach(list -> {
-                        buf.writeDouble(list.get(0));
-                    });
-                }
             });
         });
 
