@@ -21,6 +21,7 @@ import net.robert.mcduro.events.ModEvents;
 import net.robert.mcduro.math.Helper;
 import net.robert.mcduro.player.PlayerData;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -85,7 +86,7 @@ public class ModHudEvents {
         HudRenderCallback.EVENT.register((context, tickDelta) -> {
             PlayerData playerData = ModClientEvents.playerData;
             if (!playerData.openedWuHun.equals("null")) {
-                List<List<Double>> wuHunData = playerData.wuHun.get(playerData.openedWuHun);
+                List<List<Double>> wuHunData = playerData.wuHun.getOrDefault(playerData.openedWuHun, new ArrayList<>());
                 int n = 0;
                 for (List<Double> skill : wuHunData) {
                     double power = skill.get(1) - ModClientEvents.thresholdVal;

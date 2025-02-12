@@ -1,6 +1,7 @@
 package net.robert.mcduro.events;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
@@ -44,6 +45,7 @@ public class ModClientEvents {
                 client.player.sendMessage(Text.of("Client initialized player Hun Li: " + playerData.hunLi));
                 client.player.sendMessage(Text.of("Client initialized player Max Hun Li: " + playerData.maxHunLi));
                 client.player.sendMessage(Text.of("Client initialized player Hun Li Level: " + playerData.hunLiLevel));
+                ClientPlayNetworking.send(ModEvents.SYNC_PLAYERS_WUHUN, PacketByteBufs.create());
             });
         });
 
@@ -219,6 +221,12 @@ public class ModClientEvents {
 
         ClientPlayNetworking.registerGlobalReceiver(ModEvents.SYNC_PLAYERS_WUHUN, (client, handler, buf, sender) -> {
             showedWuhun.put(buf.readUuid(), buf.readString());
+        });
+
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+            playerData = new PlayerData();
+            showedYears.clear();
+            showedWuhun.clear();
         });
 
         // TODO 01/11/2025 魂技蓄力时间：根据修为-修为越高时间越短

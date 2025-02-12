@@ -46,13 +46,26 @@ public class ModServerEvents {
             data.writeInt(playerData.hunLiLevel);
 
             ServerPlayerEntity player = handler.player;
-            player.sendMessage(Text.of("Initialized Server Player: " + player.getName().toString()));
-            player.sendMessage(Text.of("Hun Li: " + playerData.hunLi));
-            player.sendMessage(Text.of("Max Hun Li: " + playerData.maxHunLi));
-            player.sendMessage(Text.of("Hun Li Level: " + playerData.hunLiLevel));
+            player.sendMessage(Text.of("Server -> Initialized Server Player: " + player.getName().toString()));
+            player.sendMessage(Text.of("Server -> Hun Li: " + playerData.hunLi));
+            player.sendMessage(Text.of("Server -> Max Hun Li: " + playerData.maxHunLi));
+            player.sendMessage(Text.of("Server -> Hun Li Level: " + playerData.hunLiLevel));
+            List<ServerPlayerEntity> players = new ArrayList<>(server.getPlayerManager().getPlayerList());
+            players.remove(handler.player);
             server.execute(() -> {
                 ServerPlayNetworking.send(handler.getPlayer(), ModEvents.INIT_SYNC, data);
                 playerData.syncWuHun(player);
+                // Sync Showed years
+                for (ServerPlayerEntity otherPlayer : players) {
+                    PlayerData otherPlayerData = StateSaverAndLoader.getPlayerState(otherPlayer);
+                    PacketByteBuf buf = PacketByteBufs.create();
+                    buf.writeUuid(otherPlayer.getUuid());
+                    buf.writeLong(otherPlayerData.openWuHunTicks.get(otherPlayer.getUuid()));
+                    buf.writeInt(otherPlayerData.wuHun.getOrDefault(otherPlayerData.openedWuHun, new ArrayList<>()).size());
+                    otherPlayerData.wuHun.getOrDefault(otherPlayerData.openedWuHun, new ArrayList<>()).forEach(list -> {
+                        buf.writeDouble(list.get(0));
+                    });
+                }
             });
         });
 
@@ -219,6 +232,20 @@ public class ModServerEvents {
                         }
                     }
                 }
+            }
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(ModEvents.SYNC_PLAYERS_WUHUN, (server, player, handler, buf, sender) -> {
+            List<ServerPlayerEntity> players = new ArrayList<>(server.getPlayerManager().getPlayerList());
+            players.remove(player);
+            for (ServerPlayerEntity otherPlayer : players) {
+                PlayerData playerData = StateSaverAndLoader.getPlayerState(otherPlayer);
+                PacketByteBuf data = PacketByteBufs.create();
+                data.writeUuid(otherPlayer.getUuid());
+                data.writeString(playerData.openedWuHun);
+                server.execute(() -> {
+                    ServerPlayNetworking.send(player, ModEvents.SYNC_PLAYERS_WUHUN, data);
+                });
             }
         });
     }
