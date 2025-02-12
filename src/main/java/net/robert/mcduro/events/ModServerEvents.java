@@ -177,6 +177,9 @@ public class ModServerEvents {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                 PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+                if (playerData.openedWuHun.equals("fengHuang")) {
+                    player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 10, 1, false, false, false));
+                }
                 if (playerData.statusEffects.isEmpty()) continue;
                 if (!playerData.statusEffects.containsKey("FHSkill3") && playerData.hunLiLevel < 70) {
                     if (player.interactionManager.getGameMode().isSurvivalLike()) {

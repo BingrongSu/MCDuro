@@ -64,6 +64,7 @@ public class FHSkills {
                     player.getEyePos().z + z * i);
             BlockState blockState = world.getBlockState(pos);
 
+            world.setBlockState(pos, Blocks.FIRE.getDefaultState());
             if (!blockState.isOf(Blocks.AIR)) {
                 cross ++;
                 if (blockState.isIn(BlockTags.LOGS)) {
@@ -116,8 +117,8 @@ public class FHSkills {
             }
         }
     }
-//
-//    // 4. 凤凰啸天击
+
+    // 4. 凤凰啸天击
 //    public static void Skill4(PlayerEntity player) {
 //        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 //        float damage = playerData.years.get("fengHuang").get(3) / 10f;
@@ -136,7 +137,7 @@ public class FHSkills {
 //
 //        // 第二阶段 事件处理 - SkillFH4Ball 中注册完成
 //    }
-//
+
 //    // 5. 凤凰流星雨
 //    public static void Skill5(PlayerEntity player) {
 //        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);

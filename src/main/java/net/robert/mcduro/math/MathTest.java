@@ -13,9 +13,9 @@ public class MathTest {
         for (int i = 1; i <= 100; i++) {
             System.out.print(i);
             System.out.print("   ");
-            System.out.println(Helper.level2HunLi(i));
-//            System.out.print("   ");
-//            System.out.println((Helper.level2HunLi(i + 1) - Helper.level2HunLi(i))/144000d);
+            System.out.print(Helper.level2HunLi(i));
+            System.out.print("   ");
+            System.out.println();
         }
 
 //        System.out.println(Helper.increaseMaxHunLi(20000000, 500000000));
