@@ -101,7 +101,6 @@ public class FHSkills {
         Long duration = (long) (amp * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(1).get(0))) * (1 + (0.05+(0.2-0.05)*power)));
         playerData.addStatusEffect(player, "FHSkill2", new ArrayList<>(List.of(duration, 0L)));
     }
-    // TODO 02/10/2025 关闭武魂时状态效果逐渐消失，5秒内重新开启武魂恢复；状态效果闪动（ambient）
     // TODO 02/09/2025 魂核的凝聚、魂核增幅魂力恢复
 
     // 3. 凤翼天翔

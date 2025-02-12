@@ -136,8 +136,8 @@ public class ModAdvancements implements Consumer<Consumer<AdvancementEntry>> {
         AdvancementEntry getSoulRingTtdAdvancement = Advancement.Builder.create().parent(getStuckAdvancement)
                 .display(
                         ModItems.SOUL_RING_TTD, // 显示的图标
-                        Text.translatable("advancements.get_ring_ttd.title").setStyle(Style.EMPTY.withColor(Formatting.BLACK)), // 标题
-                        Text.translatable("advancements.get_ring_ttd.description").setStyle(Style.EMPTY.withColor(Formatting.BLACK)), // 描述
+                        Text.translatable("advancements.get_ring_ttd.title").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)), // 标题
+                        Text.translatable("advancements.get_ring_ttd.description").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY)), // 描述
                         new Identifier("textures/gui/advancements/backgrounds/adventure.png"), // 使用的背景图片
                         AdvancementFrame.CHALLENGE, // 选项: TASK, CHALLENGE, GOAL
                         true, // 在右上角显示
