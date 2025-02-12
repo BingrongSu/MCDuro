@@ -3,7 +3,8 @@
   "package": "net.robert.mcduro.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "InGameHudMixin"
+    "InGameHudMixin",
+    "ZombieEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
