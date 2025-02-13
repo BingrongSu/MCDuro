@@ -357,7 +357,7 @@ public class PlayerData {
                 List<Entity> entities = world.getOtherEntities(player, new Box(pos.add(0.5, 0.5, 0.5), pos.subtract(0.5, 0.5, 0.5)));
                 if (!entities.isEmpty()) {
                     System.out.println("Server -> Get entity: %s".formatted(entities.get(0).getUuidAsString()));
-                    player.sendMessage(Text.of("Server -> Get entity: %s".formatted(entities.get(0).getUuidAsString())));
+                    player.sendMessage(Text.of("Server -> Get entity: %s".formatted(entities.get(0).getName().getString())));
                     this.targets.add(entities.get(0));
                     break;
                 }

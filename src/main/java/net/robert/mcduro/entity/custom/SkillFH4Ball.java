@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MovementType;
 import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -21,13 +20,13 @@ import java.util.Objects;
 public class SkillFH4Ball extends FireballEntity {
     private final float damage;
     private final double range;
-    private final Entity target;
+    private final List<Entity> targets;
 
-    public SkillFH4Ball(World world, LivingEntity owner, double velocityX, double velocityY, double velocityZ, int explosionPower, float damage, double range, Entity target) {
+    public SkillFH4Ball(World world, LivingEntity owner, double velocityX, double velocityY, double velocityZ, int explosionPower, float damage, double range, List<Entity> targets) {
         super(world, owner, velocityX, velocityY, velocityZ, explosionPower);
         this.damage = damage;
         this.range = range;
-        this.target = target;
+        this.targets = targets;
     }
 
     @Override
@@ -75,9 +74,12 @@ public class SkillFH4Ball extends FireballEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!this.getWorld().isClient && Objects.nonNull(target)) {
-            Vec3d dir = target.getPos().subtract(this.getPos());
+        if (!this.getWorld().isClient && Objects.nonNull(targets) && !targets.isEmpty()) {
+            Vec3d dir = targets.get(0).getPos().subtract(this.getPos());
             this.setVelocity(dir.normalize());
+        }
+        if (Objects.isNull(Objects.requireNonNull(this.getServer()).getOverworld().getEntity(targets.get(0).getUuid()))) {
+            targets.remove(0);
         }
     }
 

@@ -173,7 +173,7 @@ public class ModServerEvents {
                             break;
                         case 3:
                             PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-                            FHSkills.skill4(player, playerData.targets.isEmpty() ? null : playerData.targets.get(0));
+                            FHSkills.skill4(player, playerData.targets.isEmpty() ? null : new ArrayList<>(playerData.targets));
                             break;
                     }
                     break;
