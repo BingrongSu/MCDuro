@@ -95,6 +95,15 @@ public class PlayerEntityRendererMixin {
 //            wuHunMatrices.translate(0, 0, -4);
             itemRenderer.renderItem(new ItemStack(ModItems.WU_HUN_FENG_HUANG), ModelTransformationMode.HEAD, lightLevel, OverlayTexture.DEFAULT_UV, matrices, vertexConsumerProvider, player.getWorld(), 1);
             wuHunMatrices.pop();
+        } else if (openedWuhun.equals("liuLi")) {
+            wuHunMatrices.push();
+            wuHunMatrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees(player.bodyYaw));
+            wuHunMatrices.translate(0, 0.2f, -0.7);
+            wuHunMatrices.scale(2f, 2f, 0.01f);
+            Vec3d yawVec = getPlayerBodyFacingVector(player.bodyYaw);
+//            wuHunMatrices.translate(0, 0, -4);
+            itemRenderer.renderItem(new ItemStack(ModItems.WU_HUN_LIU_LI), ModelTransformationMode.HEAD, lightLevel, OverlayTexture.DEFAULT_UV, matrices, vertexConsumerProvider, player.getWorld(), 1);
+            wuHunMatrices.pop();
         }
     }
     // TODO 12/08/2024 添加不同颜色魂环（缺带金纹的十万年和百万年）

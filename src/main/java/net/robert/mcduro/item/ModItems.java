@@ -24,7 +24,7 @@ public class ModItems {
 
     public static final Item WU_HUN_FENG_HUANG = registerItems("wu_hun_feng_huang", new WuHunAdding(new FabricItemSettings().food(ModFoodComponents.WUHUN_ADDING), "fengHuang"));
 //    public static final Item WU_HUN_XIANG_CHANG = registerItems("wu_hun_xiang_chang", new WuHunAdding(new FabricItemSettings().food(ModFoodComponents.WUHUN_ADDING), "xiangCHang"));
-//    public static final Item WU_HUN_LIU_LI = registerItems("wu_hun_liu_li", new WuHunAdding(new FabricItemSettings().food(ModFoodComponents.WUHUN_ADDING), "liuLi"));
+    public static final Item WU_HUN_LIU_LI = registerItems("wu_hun_liu_li", new WuHunAdding(new FabricItemSettings().food(ModFoodComponents.WUHUN_ADDING), "liuLi"));
 
     public static final Item HUNLI_PILL_L1 = registerItems("hunli_pill_l1", new HunLiAdding(new FabricItemSettings().food(ModFoodComponents.HUNLI_ADDING), 10));
     public static final Item HUNLI_PILL_L2 = registerItems("hunli_pill_l2", new HunLiAdding(new FabricItemSettings().food(ModFoodComponents.HUNLI_ADDING), 100));

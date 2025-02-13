@@ -167,6 +167,9 @@ public class ModServerEvents {
                         case 2:
                             FHSkills.skill3(player, power);
                             break;
+                        case 3:
+                            FHSkills.skill4(player);
+                            break;
                     }
                     break;
                 case "xiangChang":

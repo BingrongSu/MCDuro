@@ -9,7 +9,7 @@
     "announce_to_chat": true,
     "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
     "description": {
-      "color": "black",
+      "color": "dark_gray",
       "translate": "advancements.get_ring_ttd.description"
     },
     "frame": "challenge",
@@ -19,7 +19,7 @@
     },
     "show_toast": true,
     "title": {
-      "color": "black",
+      "color": "dark_gray",
       "translate": "advancements.get_ring_ttd.title"
     }
   },

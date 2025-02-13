@@ -16,6 +16,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.robert.mcduro.entity.custom.SkillFH4Ball;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
 
@@ -34,9 +35,10 @@ public class FHSkills {
         double distance = (playerData.hunLiLevel / 1.2d) * (1 + 0.05+(0.2-0.05)*power);
         distance = rangeBoosted(distance, player, playerData);
         double input = playerData.maxHunLi * (0.05+(0.2-0.05)*power);
-        int cross = 0;
+        double cross = 0;
 
         playerData.increaseHunLi(-(int)(input + 1), player);
+        float damageDrain = 0;
 
         for (double i = 0; i < distance && cross <= 25; i+=dDistance) {
             float damage = (float) (input/5d * (1-((i - 1) / playerData.hunLiLevel)));
@@ -51,12 +53,6 @@ public class FHSkills {
             Box box = new Box(player.getEyePos().x + x * i - range, player.getEyePos().y + y * i - range, player.getEyePos().z + z * i - range,
                     player.getEyePos().x + x * i + range, player.getEyePos().y + y * i + range, player.getEyePos().z + z * i + range);
             List<Entity> entities = world.getOtherEntities(player, box);
-            for (Entity entity : entities) {
-                if (entity instanceof LivingEntity && !tmp.contains(entity)) {
-                    entity.setFireTicks(200);
-                    entity.damage(player.getDamageSources().mobAttack(player), damage);
-                }
-            }
             tmp = new ArrayList<>(entities);
             BlockPos pos = BlockPos.ofFloored(
                     player.getEyePos().x + x * i,
@@ -64,7 +60,6 @@ public class FHSkills {
                     player.getEyePos().z + z * i);
             BlockState blockState = world.getBlockState(pos);
 
-            world.setBlockState(pos, Blocks.FIRE.getDefaultState());
             if (!blockState.isOf(Blocks.AIR)) {
                 cross ++;
                 if (blockState.isIn(BlockTags.LOGS)) {
@@ -80,6 +75,12 @@ public class FHSkills {
                     world.setBlockState(pos, Blocks.WATER.getDefaultState());
                 } else if (blockState.isOf(Blocks.LAVA)) {
                     cross -= (int) (1 / dDistance + 0.5d);
+                } else {
+                    cross += blockState.getBlock().getHardness();
+                    damageDrain += blockState.getBlock().getHardness() * 800;
+                    if (damage - damageDrain > 0 && cross <= 25) {
+                        world.setBlockState(pos, Blocks.FIRE.getDefaultState());
+                    }
                 }
 //                else if (blockState.isOf(ModBlocks.ice_ether_block)) {
 //                    world.setBlockState(pos, Blocks.AIR.getDefaultState());
@@ -91,6 +92,15 @@ public class FHSkills {
 //                    cross = 0;
 //                    i = 0;
 //                }
+                if (damage - damageDrain < 0) {
+                    break;
+                }
+                for (Entity entity : entities) {
+                    if (entity instanceof LivingEntity && !tmp.contains(entity)) {
+                        entity.setFireTicks(200);
+                        entity.damage(player.getDamageSources().mobAttack(player), damage - damageDrain);
+                    }
+                }
             }
         }
     }
@@ -119,24 +129,24 @@ public class FHSkills {
     }
 
     // 4. 凤凰啸天击
-//    public static void Skill4(PlayerEntity player) {
-//        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-//        float damage = playerData.years.get("fengHuang").get(3) / 10f;
-//        damage = damageBoosted(damage, player, playerData);
-//        double range = Math.min(10, Math.log(playerData.years.get("fengHuang").get(3)));
-//        range = rangeBoosted(range, player, playerData);
-//        double x = player.getRotationVector().x;
-//        double y = player.getRotationVector().y;
-//        double z = player.getRotationVector().z;
-//        double v = 5d;
-//        SkillFH4Ball fireball = new SkillFH4Ball(player.getWorld(), player, x*v, y*v, z*v,
-//                                                4, damage, range);
-//        fireball.setPos(player.getX() + x*2, player.getY() + y*2, player.getZ() + z*2);
-//        player.getWorld().spawnEntity(fireball);
-//        // 第一阶段
-//
-//        // 第二阶段 事件处理 - SkillFH4Ball 中注册完成
-//    }
+    public static void skill4(PlayerEntity player) {
+        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+        float damage = 10;
+        damage = damageBoosted(damage, player, playerData);
+        double range = 10;
+        range = rangeBoosted(range, player, playerData);
+        double x = player.getRotationVector().x;
+        double y = player.getRotationVector().y;
+        double z = player.getRotationVector().z;
+        double v = 5d;
+        SkillFH4Ball fireball = new SkillFH4Ball(player.getWorld(), player, x*v, y*v, z*v,
+                                                4, damage, range);
+        fireball.setPos(player.getX() + x*2, player.getY() + y*2, player.getZ() + z*2);
+        player.getWorld().spawnEntity(fireball);
+        // 第一阶段
+
+        // 第二阶段 事件处理 - SkillFH4Ball 中注册完成
+    }
 
 //    // 5. 凤凰流星雨
 //    public static void Skill5(PlayerEntity player) {

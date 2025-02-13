@@ -35,6 +35,7 @@ public class ModItemGroup {
                         entries.add(ModItems.SOUL_RING_TTD);
                         entries.add(ModItems.SOUL_RING_HTD);
                         entries.add(ModItems.WU_HUN_FENG_HUANG);
+                        entries.add(ModItems.WU_HUN_LIU_LI);
 
                         entries.add(ModItems.HUNLI_PILL_L1);
                         entries.add(ModItems.HUNLI_PILL_L2);

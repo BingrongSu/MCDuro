@@ -32,6 +32,7 @@ public class ModModelsProvider extends FabricModelProvider {
         itemModelGenerator.register(ModItems.SHEN_SILVER_NUGGET, Models.GENERATED);
 
         itemModelGenerator.register(ModItems.WU_HUN_FENG_HUANG, Models.GENERATED);
+        itemModelGenerator.register(ModItems.WU_HUN_LIU_LI, Models.GENERATED);
         itemModelGenerator.register(ModItems.HUNLI_PILL_L1, Models.GENERATED);
         itemModelGenerator.register(ModItems.HUNLI_PILL_L2, Models.GENERATED);
         itemModelGenerator.register(ModItems.HUNLI_PILL_L3, Models.GENERATED);
