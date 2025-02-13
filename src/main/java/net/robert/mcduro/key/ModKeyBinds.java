@@ -13,7 +13,7 @@ public class ModKeyBinds {
     public static KeyBinding toggleSeeThoughKeyBinding;
     public static KeyBinding useSoulSkillKeyBinding;
     public static KeyBinding jueXingKeyBinding;
-    public static KeyBinding checkWuHunKeyBinding;
+    public static KeyBinding lockEntityKeyBinding;
     public static KeyBinding switchWuHunKeyBinding;
     public static KeyBinding increaseSkillIndexKeyBinding;
     public static KeyBinding decreaseSkillIndexKeyBinding;
@@ -41,10 +41,10 @@ public class ModKeyBinds {
                 "category.mcduro.mod_key_binds" // The translation key of the keybinding's category.
         ));
 
-        checkWuHunKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.mcduro.check_wuhun", // The translation key of the keybinding's name
+        lockEntityKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.mcduro.lockEntity", // The translation key of the keybinding's name
                 InputUtil.Type.KEYSYM, // The type of the keybinding, KEYSYM for keyboard, MOUSE for mouse.
-                GLFW.GLFW_KEY_K, // The keycode of the key
+                GLFW.GLFW_KEY_X, // The keycode of the key
                 "category.mcduro.mod_key_binds" // The translation key of the keybinding's category.
         ));
 

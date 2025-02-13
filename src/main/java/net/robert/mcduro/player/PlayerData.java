@@ -4,11 +4,15 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.robert.mcduro.MCDuro;
 import net.robert.mcduro.events.ModEvents;
@@ -17,19 +21,20 @@ import net.robert.mcduro.math.Helper;
 import java.util.*;
 
 public class PlayerData {
-    public Integer hunLi = 0;                                               // 玩家当前魂力
-    public Integer maxHunLi = 0;                                            // 玩家当前魂力上限
-    public Integer hunLiLevel = 0;                                          // 玩家当前魂力等级
-    public HashMap<String, List<List<Double>>> wuHun = new HashMap<>();     // 玩家拥有的武魂和相关参数
-    public String openedWuHun = "null";                                     // 玩家当前开启的武魂
-    public Integer skillIndex = -1;                                         // 玩家当前使用的魂技
+    public Integer hunLi = 0;                                                   // 玩家当前魂力
+    public Integer maxHunLi = 0;                                                // 玩家当前魂力上限
+    public Integer hunLiLevel = 0;                                              // 玩家当前魂力等级
+    public HashMap<String, List<List<Double>>> wuHun = new HashMap<>();         // 玩家拥有的武魂和相关参数
+    public String openedWuHun = "null";                                         // 玩家当前开启的武魂
+    public Integer skillIndex = -1;                                             // 玩家当前使用的魂技
     public HashMap<String, Boolean> blProperties = new HashMap<>();
-    public HashMap<UUID, Long> openWuHunTicks = new HashMap<>();            // 玩家打开武魂的时刻
-    public HashMap<UUID, String> allys = new HashMap<>();                   // 玩家的盟友
-    public PlayerEntity lastAttacker = null;                                // 上一个攻击此玩家的玩家
-    public Map<String, List<Long>> statusEffects = new HashMap<>();       // 玩家拥有的魂技相关状态效果
+    public HashMap<UUID, Long> openWuHunTicks = new HashMap<>();                // 玩家打开武魂的时刻
+    public HashMap<UUID, String> allys = new HashMap<>();                       // 玩家的盟友
+    public PlayerEntity lastAttacker = null;                                    // 上一个攻击此玩家的玩家
+    public Map<String, List<Long>> statusEffects = new HashMap<>();             // 玩家拥有的魂技相关状态效果
+    public List<Entity> targets = new ArrayList<>();
 
-    private final List<String> standardWuHun = List.of(                     // 标准武魂类型
+    private final List<String> standardWuHun = List.of(                         // 标准武魂类型
                                                         "liuLi",
                                                         "xiangChang",
                                                         "fengHuang");
@@ -343,6 +348,36 @@ public class PlayerData {
             });
         }
     }
+
+    public void lockOn(PlayerEntity player) {
+        if (!player.getWorld().isClient) {
+            ServerWorld world = Objects.requireNonNull(player.getServer()).getOverworld();
+            for (int i = 0; i < 32; i++) {
+                Vec3d pos = player.getEyePos().add(player.getRotationVector().multiply(i));
+                List<Entity> entities = world.getOtherEntities(player, new Box(pos.add(0.5, 0.5, 0.5), pos.subtract(0.5, 0.5, 0.5)));
+                if (!entities.isEmpty()) {
+                    System.out.println("Server -> Get entity: %s".formatted(entities.get(0).getUuidAsString()));
+                    player.sendMessage(Text.of("Server -> Get entity: %s".formatted(entities.get(0).getUuidAsString())));
+                    this.targets.add(entities.get(0));
+                    break;
+                }
+            }
+        } else {
+            ClientPlayNetworking.send(ModEvents.LOCKED_PLAYER, PacketByteBufs.create());
+        }
+    }
+
+    public void delNullTargets(ServerPlayerEntity serverPlayer) {
+        List<Entity> entities = new ArrayList<>(this.targets);
+        for (Entity entity : entities) {
+            if (Objects.isNull(entity) || Objects.isNull(Objects.requireNonNull(serverPlayer.getServer()).getOverworld().getEntity(entity.getUuid()))){
+                targets.remove(entity);
+            }
+        }
+    }
+
     // TODO 02/09/2025 玩家使用魂技时魂环变化
     // TODO 02/09/2025 玩家使用技能切换 -> 魂环的显示和消失、HUD快捷栏显示
+    // TODO 02/09/2025 玩家是用精神力锁定
+
 }

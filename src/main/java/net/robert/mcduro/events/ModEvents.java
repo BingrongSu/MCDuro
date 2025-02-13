@@ -26,6 +26,7 @@ public class ModEvents {
     public static Identifier OPEN_WU_HUN = new Identifier(MCDuro.MOD_ID, "events.open_wu_hun");
     public static Identifier GET_MOB_YEAR = new Identifier(MCDuro.MOD_ID, "events.get_mob_year");
     public static Identifier USE_SOUL_SKILL = new Identifier(MCDuro.MOD_ID, "events.use_soul_skill");
+    public static Identifier LOCKED_PLAYER = new Identifier(MCDuro.MOD_ID, "events.locked_player");
     public static Identifier SYNC_STATUS_EFFECTS = new Identifier(MCDuro.MOD_ID, "events.sync_status_effects");
 
     private static final Identifier COAL_ORE_LOOT_TABLE_ID = Blocks.COAL_ORE.getLootTableId();

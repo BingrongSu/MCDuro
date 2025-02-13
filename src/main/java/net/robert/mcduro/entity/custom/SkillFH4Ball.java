@@ -4,25 +4,30 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MovementType;
 import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Position;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.robert.mcduro.MCDuro;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SkillFH4Ball extends FireballEntity {
     private final float damage;
     private final double range;
+    private final Entity target;
 
-    public SkillFH4Ball(World world, LivingEntity owner, double velocityX, double velocityY, double velocityZ, int explosionPower, float damage, double range) {
+    public SkillFH4Ball(World world, LivingEntity owner, double velocityX, double velocityY, double velocityZ, int explosionPower, float damage, double range, Entity target) {
         super(world, owner, velocityX, velocityY, velocityZ, explosionPower);
         this.damage = damage;
         this.range = range;
+        this.target = target;
     }
 
     @Override
@@ -69,7 +74,11 @@ public class SkillFH4Ball extends FireballEntity {
 
     @Override
     public void tick() {
-
+        super.tick();
+        if (!this.getWorld().isClient && Objects.nonNull(target)) {
+            Vec3d dir = target.getPos().subtract(this.getPos());
+            this.setVelocity(dir.normalize());
+        }
     }
 
     private void createLava(Position pos1) {

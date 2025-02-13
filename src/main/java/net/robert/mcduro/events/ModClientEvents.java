@@ -28,6 +28,7 @@ public class ModClientEvents {
     public static final double thresholdVal = 4 * chargeV;                     // 长按的阀值
     public static HashMap<UUID, Integer> mobsYear = new HashMap<>();           // 生物年限
     public static Boolean readyForSkill = false;                                // 玩家是否处于准备释放魂技的状态
+    public static double lockChargeVal = 0;                                     // 精神力锁定蓄力
 
 
     public static void registerModClientEvents() {
@@ -126,17 +127,6 @@ public class ModClientEvents {
         });
 
         ClientTickEvents.END_CLIENT_TICK.register((client) -> {
-//            if (ModKeyBinds.useSoulSkillKeyBinding.isPressed()) {
-//                chargeVal += chargeVal < 1 ? chargeV : 0;
-//                System.out.println("Is pressing : " + chargeVal);
-//            } else {
-//                if (chargeVal > 0) {
-//                    // use soul skill
-//                    System.out.println("---------------------Charge Value : " + chargeVal);
-//                    chargeVal = 0;
-//                }
-//            }
-//            if (!playerData.openedWuHun.equals("null") && readyForSkill) {
             if (!playerData.openedWuHun.equals("null")) {
                 List<List<Double>> wuHunData = playerData.wuHun.getOrDefault(playerData.openedWuHun, new ArrayList<>());
                 for (int i = 0; i < wuHunData.size(); i++) {
@@ -165,6 +155,28 @@ public class ModClientEvents {
                 }
             } else {
                 playerData.wuHun.forEach((key, value) -> value.forEach(list -> list.set(1, 0d)));   // 将所有魂技的蓄力值清零
+            }
+        });
+
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+//            boolean hasPower = (int) (playerData.maxHunLi * (0.05 + (0.2-0.05) * (wuHunData.get(i).get(1) - thresholdVal)) + 1) <= playerData.hunLi;
+            if (ModKeyBinds.lockEntityKeyBinding.isPressed()) {
+//                if (hasPower) {
+//                    wuHunData.get(i).set(1, wuHunData.get(i).get(1) + (wuHunData.get(i).get(1) < 1 + thresholdVal ? chargeV : 0));
+                lockChargeVal += 1/40d;
+                System.out.println("Client -> Key x is pressed. Of value: " + lockChargeVal);
+//                }
+            } else {
+                if (lockChargeVal > 0) {
+                    if (lockChargeVal > thresholdVal) {
+                        // use soul skill
+                        double chargeValue = lockChargeVal - thresholdVal;
+                        System.out.println("Key x ---------------------Charge Value : " + chargeValue);
+                        assert client.player != null;
+                        playerData.lockOn(client.player);
+                    }
+                    lockChargeVal = 0;
+                }
             }
         });
 

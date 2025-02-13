@@ -149,6 +149,10 @@ public class ModServerEvents {
             if (server.getOverworld().getTime() % 400 == 0) {
                 serverData.deleteNullMobs(server);
             }
+            for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
+                PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+                playerData.delNullTargets(player);
+            }
         });
 
         ServerPlayNetworking.registerGlobalReceiver(ModEvents.USE_SOUL_SKILL, ((server, player, handler, buf, sender) -> {
@@ -168,7 +172,8 @@ public class ModServerEvents {
                             FHSkills.skill3(player, power);
                             break;
                         case 3:
-                            FHSkills.skill4(player);
+                            PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+                            FHSkills.skill4(player, playerData.targets.isEmpty() ? null : playerData.targets.get(0));
                             break;
                     }
                     break;
@@ -243,6 +248,11 @@ public class ModServerEvents {
                     ServerPlayNetworking.send(player, ModEvents.SYNC_PLAYERS_WUHUN, data);
                 });
             }
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(ModEvents.LOCKED_PLAYER, (server, player, handler, buf, sender) -> {
+            PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+            playerData.lockOn(player);
         });
     }
     // TODO 01/11/2025 后期添加生物群系-星斗大森林

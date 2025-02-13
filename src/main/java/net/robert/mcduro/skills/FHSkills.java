@@ -53,7 +53,6 @@ public class FHSkills {
             Box box = new Box(player.getEyePos().x + x * i - range, player.getEyePos().y + y * i - range, player.getEyePos().z + z * i - range,
                     player.getEyePos().x + x * i + range, player.getEyePos().y + y * i + range, player.getEyePos().z + z * i + range);
             List<Entity> entities = world.getOtherEntities(player, box);
-            tmp = new ArrayList<>(entities);
             BlockPos pos = BlockPos.ofFloored(
                     player.getEyePos().x + x * i,
                     player.getEyePos().y + y * i,
@@ -76,32 +75,27 @@ public class FHSkills {
                 } else if (blockState.isOf(Blocks.LAVA)) {
                     cross -= (int) (1 / dDistance + 0.5d);
                 } else {
-                    cross += blockState.getBlock().getHardness();
-                    damageDrain += blockState.getBlock().getHardness() * 800;
+                    float hardness = blockState.getBlock().getHardness();
+                    if (hardness < 0) {
+                        break;
+                    }
+                    cross += hardness;
+                    damageDrain += hardness * 800;
                     if (damage - damageDrain > 0 && cross <= 25) {
                         world.setBlockState(pos, Blocks.FIRE.getDefaultState());
                     }
                 }
-//                else if (blockState.isOf(ModBlocks.ice_ether_block)) {
-//                    world.setBlockState(pos, Blocks.AIR.getDefaultState());
-//                    ItemStack stack = new ItemStack(ModBlocks.ice_ether_block.asItem(), 1);
-//                    ItemEntity item = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-//                    world.spawnEntity(item);
-//                    cross += 999999;
-//                } else if (blockState.isOf(ModBlocks.fire_ether_block)) {
-//                    cross = 0;
-//                    i = 0;
-//                }
                 if (damage - damageDrain < 0) {
                     break;
                 }
-                for (Entity entity : entities) {
-                    if (entity instanceof LivingEntity && !tmp.contains(entity)) {
-                        entity.setFireTicks(200);
-                        entity.damage(player.getDamageSources().mobAttack(player), damage - damageDrain);
-                    }
+            }
+            for (Entity entity : entities) {
+                if (entity instanceof LivingEntity && !tmp.contains(entity)) {
+                    entity.setFireTicks(200);
+                    entity.damage(player.getDamageSources().mobAttack(player), damage - damageDrain);
                 }
             }
+            tmp = new ArrayList<>(entities);
         }
     }
 
@@ -129,7 +123,7 @@ public class FHSkills {
     }
 
     // 4. 凤凰啸天击
-    public static void skill4(PlayerEntity player) {
+    public static void skill4(PlayerEntity player, Entity target) {
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
         float damage = 10;
         damage = damageBoosted(damage, player, playerData);
@@ -140,7 +134,7 @@ public class FHSkills {
         double z = player.getRotationVector().z;
         double v = 5d;
         SkillFH4Ball fireball = new SkillFH4Ball(player.getWorld(), player, x*v, y*v, z*v,
-                                                4, damage, range);
+                                                4, damage, range, target);
         fireball.setPos(player.getX() + x*2, player.getY() + y*2, player.getZ() + z*2);
         player.getWorld().spawnEntity(fireball);
         // 第一阶段
