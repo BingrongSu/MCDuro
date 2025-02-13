@@ -75,7 +75,12 @@ public class FHSkills {
                 } else if (blockState.isOf(Blocks.LAVA)) {
                     cross -= (int) (1 / dDistance + 0.5d);
                 } else {
-                    float hardness = blockState.getBlock().getHardness();
+                    float hardness;
+                    if (blockState.isOf(Blocks.WATER)) {
+                        hardness = 0.2F;
+                    } else {
+                        hardness = blockState.getBlock().getHardness();
+                    }
                     if (hardness < 0) {
                         break;
                     }
