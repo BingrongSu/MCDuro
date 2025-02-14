@@ -3,8 +3,10 @@ package net.robert.mcduro.entity.custom;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.FireballEntity;
+import net.minecraft.entity.projectile.AbstractFireballEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -17,13 +19,15 @@ import net.robert.mcduro.MCDuro;
 import java.util.List;
 import java.util.Objects;
 
-public class SkillFH4Ball extends FireballEntity {
+public class SkillFH4Ball extends AbstractFireballEntity {
+    private int explosionPower = 1;
     private final float damage;
     private final double range;
     private final List<Entity> targets;
 
     public SkillFH4Ball(World world, LivingEntity owner, double velocityX, double velocityY, double velocityZ, int explosionPower, float damage, double range, List<Entity> targets) {
-        super(world, owner, velocityX, velocityY, velocityZ, explosionPower);
+        super(EntityType.FIREBALL, owner, velocityX, velocityY, velocityZ, world);
+        this.explosionPower = explosionPower;
         this.damage = damage;
         this.range = range;
         this.targets = targets;
@@ -31,25 +35,33 @@ public class SkillFH4Ball extends FireballEntity {
 
     @Override
     protected void onCollision(HitResult hitResult) {
-        if (hitResult instanceof EntityHitResult) {
-            if (!(((EntityHitResult) hitResult).getEntity() instanceof SkillFH4Ball)) {
-                super.onCollision(hitResult);
-                rangeDamage(hitResult);
+        super.onCollision(hitResult);
+        if (!this.getWorld().isClient) {
+            if (hitResult instanceof EntityHitResult) {
+                if (!(((EntityHitResult) hitResult).getEntity() instanceof SkillFH4Ball)) {
+                    rangeDamage(hitResult);
 //                createLava(hitResult.getPos());
-            }
-        } else {
-            super.onCollision(hitResult);
-            rangeDamage(hitResult);
+                }
+            } else {
+                rangeDamage(hitResult);
 //            createLava(hitResult.getPos());
+            }
+            this.getWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, true, World.ExplosionSourceType.NONE);
+            this.discard();
         }
     }
 
     @Override
     protected void onEntityHit(EntityHitResult entityHitResult) {
-        if (!(entityHitResult.getEntity() instanceof SkillFH4Ball)) {
-            super.onEntityHit(entityHitResult);
-            rangeDamage(entityHitResult);
-//            createLava(entityHitResult.getPos());
+        super.onEntityHit(entityHitResult);
+        if (!this.getWorld().isClient) {
+            Entity entity = entityHitResult.getEntity();
+            Entity entity2 = this.getOwner();
+            entity.damage(this.getDamageSources().fireball(this, entity2), 6.0F);
+            if (entity2 instanceof LivingEntity) {
+                this.applyDamageEffects((LivingEntity)entity2, entity);
+            }
+
         }
     }
 
@@ -77,9 +89,9 @@ public class SkillFH4Ball extends FireballEntity {
         if (!this.getWorld().isClient && Objects.nonNull(targets) && !targets.isEmpty()) {
             Vec3d dir = targets.get(0).getPos().subtract(this.getPos());
             this.setVelocity(dir.normalize());
-        }
-        if (Objects.isNull(Objects.requireNonNull(this.getServer()).getOverworld().getEntity(targets.get(0).getUuid()))) {
-            targets.remove(0);
+            if (Objects.isNull(Objects.requireNonNull(this.getServer()).getOverworld().getEntity(targets.get(0).getUuid()))) {
+                targets.remove(0);
+            }
         }
     }
 
@@ -114,5 +126,18 @@ public class SkillFH4Ball extends FireballEntity {
                 }
             }
         }
+    }
+
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putByte("ExplosionPower", (byte)this.explosionPower);
+    }
+
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        if (nbt.contains("ExplosionPower", 99)) {
+            this.explosionPower = nbt.getByte("ExplosionPower");
+        }
+
     }
 }
