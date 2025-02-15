@@ -12,6 +12,7 @@ import net.minecraft.text.Text;
 import net.robert.mcduro.MCDuro;
 import net.robert.mcduro.game.ModHudEvents;
 import net.robert.mcduro.key.ModKeyBinds;
+import net.robert.mcduro.math.Helper;
 import net.robert.mcduro.player.PlayerData;
 import org.lwjgl.glfw.GLFW;
 
@@ -131,7 +132,9 @@ public class ModClientEvents {
                 List<List<Double>> wuHunData = playerData.wuHun.getOrDefault(playerData.openedWuHun, new ArrayList<>());
                 for (int i = 0; i < wuHunData.size(); i++) {
                     boolean isPressed = GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_1 + i) == GLFW.GLFW_PRESS;
-                    boolean hasPower = (int) (playerData.maxHunLi * (0.05 + (0.2-0.05) * (wuHunData.get(i).get(1) - thresholdVal)) + 1) <= playerData.hunLi;
+//                    boolean hasPower = (int) (playerData.maxHunLi * (0.05 + (0.2-0.05) * (wuHunData.get(i).get(1) - thresholdVal)) + 1) <= playerData.hunLi;
+                    int powerNeeded = Helper.powerNeeded(playerData.openedWuHun, String.valueOf(i+1), wuHunData.get(i).get(1) - thresholdVal, playerData.maxHunLi);
+                    boolean hasPower = powerNeeded <= playerData.hunLi;
                     if (isPressed) {
                         if (hasPower) {
                             wuHunData.get(i).set(1, wuHunData.get(i).get(1) + (wuHunData.get(i).get(1) < 1 + thresholdVal ? chargeV : 0));

@@ -94,6 +94,21 @@ public class Helper {
         return ans;
     }
 
+    public static int powerNeeded(String wuHun, String skill, double power, int maxHunLi) {
+        return switch (wuHun) {
+            case "fengHuang" -> {
+                if ("123".contains(skill)) {
+                    yield (int) (maxHunLi * (0.05 + (0.2 - 0.05) * power) + 0.5);
+                } else if ("4".contains(skill)) {
+                    yield (int) (maxHunLi * (0.15 + (0.5 - 0.15) * power) + 0.5);
+                }
+                yield 0;
+            }
+            case "xiangChang" -> 0;
+            default -> 0;
+        };
+    }
+
     public static int increaseMaxHunLi(int origin, int increment, PlayerEntity player) {
         int ans = origin;
         while (increment > 0) {

@@ -17,19 +17,24 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.robert.mcduro.entity.custom.SkillFH4Ball;
+import net.robert.mcduro.math.Helper;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FHSkills {
     // 1. 凤凰火线
-    public static void skill1(PlayerEntity player, ServerWorld world, double power) {
+    public static void skill1(PlayerEntity player, ServerWorld world, double power, List<Entity> targets) {
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 
-        Vec3d looking = player.getRotationVector();
-        double x = looking.x, y = looking.y, z = looking.z;
+        Vec3d dir = player.getRotationVector();
+        if (!Objects.isNull(targets) && !targets.isEmpty()) {
+            dir = targets.get(0).getPos().subtract(player.getEyePos()).normalize();
+        }
+        double x = dir.x, y = dir.y, z = dir.z;
         List<Entity> tmp = new ArrayList<>();
         double dDistance = .25;
         double distance = (playerData.hunLiLevel / 1.2d) * (1 + 0.05+(0.2-0.05)*power);
@@ -37,7 +42,7 @@ public class FHSkills {
         double input = playerData.maxHunLi * (0.05+(0.2-0.05)*power);
         double cross = 0;
 
-        playerData.increaseHunLi(-(int)(input + 1), player);
+        playerData.increaseHunLi(-(int)(input + 0.5), player);
         float damageDrain = 0;
 
         for (double i = 0; i < distance && cross <= 25; i+=dDistance) {
@@ -106,10 +111,13 @@ public class FHSkills {
 
     // 2. 欲火凤凰
     public static void skill2(PlayerEntity player, double power) {
-        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-        double amp = 600 + (3600-600) * power;
-        Long duration = (long) (amp * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(1).get(0))) * (1 + (0.05+(0.2-0.05)*power)));
-        playerData.addStatusEffect(player, "FHSkill2", new ArrayList<>(List.of(duration, 0L)));
+        if (!player.getWorld().isClient) {
+            PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+            double amp = 600 + (3600-600) * power;
+            Long duration = (long) (amp * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(1).get(0))) * (1 + (0.05+(0.2-0.05)*power)));
+            playerData.addStatusEffect(player, "FHSkill2", new ArrayList<>(List.of(duration, 0L)));
+            playerData.increaseHunLi(-Helper.powerNeeded("fengHuang", "2", power, playerData.maxHunLi), player);
+        }
     }
     // TODO 02/09/2025 魂核的凝聚、魂核增幅魂力恢复
 
@@ -124,27 +132,31 @@ public class FHSkills {
                 player.getAbilities().allowFlying = true;
                 player.sendAbilitiesUpdate();
             }
+            playerData.increaseHunLi(-Helper.powerNeeded("fengHuang", "3", power, playerData.maxHunLi), player);
         }
     }
 
     // 4. 凤凰啸天击
-    public static void skill4(PlayerEntity player, List<Entity> targets) {
-        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-        float damage = 10;
-        damage = damageBoosted(damage, player, playerData);
-        double range = 10;
-        range = rangeBoosted(range, player, playerData);
-        double x = player.getRotationVector().x;
-        double y = player.getRotationVector().y;
-        double z = player.getRotationVector().z;
-        double v = 5d;
-        SkillFH4Ball fireball = new SkillFH4Ball(player.getWorld(), player, x*v, y*v, z*v,
-                                                4, damage, range, targets);
-        fireball.setPos(player.getX() + x*2, player.getY() + y*2, player.getZ() + z*2);
-        player.getWorld().spawnEntity(fireball);
-        // 第一阶段
-
-        // 第二阶段 事件处理 - SkillFH4Ball 中注册完成
+    public static void skill4(PlayerEntity player, double power, List<Entity> targets) {
+        if (!player.getWorld().isClient) {
+            PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+            int input = Helper.powerNeeded("fengHuang", "4", power, playerData.maxHunLi);
+            float damage = (float) (input / 6f * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(2).get(0))));
+            damage = damageBoosted(damage, player, playerData);
+            double range = playerData.hunLiLevel / 6f * (1 + 0.15+(0.5-0.15)*power);
+            range = rangeBoosted(range, player, playerData);
+            double x = player.getRotationVector().x;
+            double y = player.getRotationVector().y;
+            double z = player.getRotationVector().z;
+            double v = 5d;
+            SkillFH4Ball fireball = new SkillFH4Ball(player.getWorld(), player, x*v, y*v, z*v,
+                    (int) range, damage, range, targets);
+            fireball.setPos(player.getX() + x*2, player.getY() + y*2, player.getZ() + z*2);
+            player.getWorld().spawnEntity(fireball);
+            // 第一阶段
+            // 第二阶段 事件处理 - SkillFH4Ball 中注册完成
+            playerData.increaseHunLi(-input, player);
+        }
     }
 
 //    // 5. 凤凰流星雨
@@ -297,7 +309,7 @@ public class FHSkills {
 
     private static double rangeBoosted(double range, PlayerEntity player, PlayerData playerData) {
         if (playerData.statusEffects.containsKey("FHSkill3")) {
-            range *= 1.3f;
+            range *= 1.5f;
             System.out.println("Skill Range Boost FH3");
         }
 //        if (player.hasStatusEffect(ModEffects.SkillFH3)) {

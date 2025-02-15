@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -46,12 +47,12 @@ public class ModServerEvents {
             data.writeInt(playerData.hunLiLevel);
 
             ServerPlayerEntity player = handler.player;
-            player.sendMessage(Text.of("Server -> Initialized Server Player: " + player.getName().toString()));
+            player.sendMessage(Text.of("Server -> Initialized Server Player: " + player.getName().getString()));
             player.sendMessage(Text.of("Server -> Hun Li: " + playerData.hunLi));
             player.sendMessage(Text.of("Server -> Max Hun Li: " + playerData.maxHunLi));
             player.sendMessage(Text.of("Server -> Hun Li Level: " + playerData.hunLiLevel));
-            List<ServerPlayerEntity> players = new ArrayList<>(server.getPlayerManager().getPlayerList());
-            players.remove(handler.player);
+//            List<ServerPlayerEntity> players = new ArrayList<>(server.getPlayerManager().getPlayerList());
+//            players.remove(handler.player);
             server.execute(() -> {
                 ServerPlayNetworking.send(handler.getPlayer(), ModEvents.INIT_SYNC, data);
                 playerData.syncWuHun(player);
@@ -161,9 +162,10 @@ public class ModServerEvents {
             double power = buf.readDouble();
             switch (wuhun) {
                 case "fengHuang":
+                    PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
                     switch (n) {
                         case 0:
-                            FHSkills.skill1(player, server.getOverworld(), power);
+                            FHSkills.skill1(player, server.getOverworld(), power, playerData.targets.isEmpty() ? null : new ArrayList<>(playerData.targets));
                             break;
                         case 1:
                             FHSkills.skill2(player, power);
@@ -172,8 +174,7 @@ public class ModServerEvents {
                             FHSkills.skill3(player, power);
                             break;
                         case 3:
-                            PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-                            FHSkills.skill4(player, playerData.targets.isEmpty() ? null : new ArrayList<>(playerData.targets));
+                            FHSkills.skill4(player, power, playerData.targets.isEmpty() ? null : new ArrayList<>(playerData.targets));
                             break;
                     }
                     break;

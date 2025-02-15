@@ -1,7 +1,5 @@
 package net.robert.mcduro.entity.custom;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -11,9 +9,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Position;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.robert.mcduro.MCDuro;
@@ -31,7 +27,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
         super(EntityType.FIREBALL, owner, velocityX, velocityY, velocityZ, world);
         this.explosionPower = explosionPower;
         this.damage = damage;
-        this.range = range;
+        this.range = 0.5 * range;
         this.targets = targets;
     }
 
@@ -48,7 +44,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                 rangeDamage(hitResult);
 //            createLava(hitResult.getPos());
             }
-            this.createLava();
+//            this.createLava();
             this.getWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, true, World.ExplosionSourceType.NONE);
             this.discard();
         }
@@ -80,7 +76,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                 if (entity instanceof LivingEntity) {
                     entity.setFireTicks(250);
                     float distance = Math.max(entity.distanceTo(this), 1);
-                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage/(distance*distance));
+                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage/distance);
                 }
             }
         }
@@ -116,25 +112,6 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                 MCDuro.scheduledTask(task, 10L*i);
             }
 
-        }
-    }
-
-    private void refresh(Position pos1, World world, Block block) {
-        BlockPos pos = BlockPos.ofFloored(pos1);
-        for (int i = -1; i < 2; i++) {
-            for (int j = 0; j < 10; j++) {
-                for (int k = -1; k < 2; k++) {
-                    if (block.equals(Blocks.LAVA)) {
-                        if (world.getBlockState(pos.add(i, j, k)).isOf(Blocks.AIR)) {
-                            world.setBlockState(pos.add(i, j, k), block.getDefaultState());
-                        }
-                    } else if (block.equals(Blocks.AIR)){
-                        if (world.getBlockState(pos.add(i, j, k)).isOf(Blocks.LAVA)) {
-                            world.setBlockState(pos.add(i, j, k), block.getDefaultState());
-                        }
-                    }
-                }
-            }
         }
     }
 
