@@ -7,6 +7,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.AbstractFireballEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -46,6 +48,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                 rangeDamage(hitResult);
 //            createLava(hitResult.getPos());
             }
+            this.createLava();
             this.getWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, true, World.ExplosionSourceType.NONE);
             this.discard();
         }
@@ -95,17 +98,24 @@ public class SkillFH4Ball extends AbstractFireballEntity {
         }
     }
 
-    private void createLava(Position pos1) {
+    private void createLava() {
         if (!this.getWorld().isClient) {
-            World world = this.getWorld();
+            ServerWorld world = (ServerWorld) this.getWorld();
+//            Runnable task = () -> {
+//                refresh(pos1, world, Blocks.LAVA);
+//            };
+//            MCDuro.scheduledTask(task, 15L);
+//            task = () -> {
+//                refresh(pos1, world, Blocks.AIR);
+//            };
+//            MCDuro.scheduledTask(task, 45L);
             Runnable task = () -> {
-                refresh(pos1, world, Blocks.LAVA);
+                world.spawnParticles(ParticleTypes.LAVA, this.getX(), this.getY(), this.getZ(), 5000, 3, 10, 3, 1);
             };
-            MCDuro.scheduledTask(task, 15L);
-            task = () -> {
-                refresh(pos1, world, Blocks.AIR);
-            };
-            MCDuro.scheduledTask(task, 45L);
+            for (int i = 0; i < 20; i++) {
+                MCDuro.scheduledTask(task, 10L*i);
+            }
+
         }
     }
 

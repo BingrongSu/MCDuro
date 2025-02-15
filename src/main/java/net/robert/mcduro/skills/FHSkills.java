@@ -85,7 +85,7 @@ public class FHSkills {
                         break;
                     }
                     cross += hardness;
-                    damageDrain += hardness * 800;
+                    damageDrain += hardness * 200;
                     if (damage - damageDrain > 0 && cross <= 25) {
                         world.setBlockState(pos, Blocks.FIRE.getDefaultState());
                     }
@@ -297,7 +297,7 @@ public class FHSkills {
 
     private static double rangeBoosted(double range, PlayerEntity player, PlayerData playerData) {
         if (playerData.statusEffects.containsKey("FHSkill3")) {
-            range *= 1.2f;
+            range *= 1.3f;
             System.out.println("Skill Range Boost FH3");
         }
 //        if (player.hasStatusEffect(ModEffects.SkillFH3)) {
