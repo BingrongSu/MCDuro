@@ -3,6 +3,7 @@ package net.robert.mcduro.entity.custom;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractFireballEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
@@ -13,6 +14,8 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.robert.mcduro.MCDuro;
+import net.robert.mcduro.player.PlayerData;
+import net.robert.mcduro.player.StateSaverAndLoader;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +30,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
         super(EntityType.FIREBALL, owner, velocityX, velocityY, velocityZ, world);
         this.explosionPower = explosionPower;
         this.damage = damage;
-        this.range = 0.5 * range;
+        this.range = 0.25 * range;
         this.targets = targets;
     }
 
@@ -66,6 +69,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
 
     private void rangeDamage(HitResult hitResult) {
         if (!this.getWorld().isClient) {
+            PlayerData playerData = StateSaverAndLoader.getPlayerState((PlayerEntity) this.getOwner());
             double x = hitResult.getPos().x;
             double y = hitResult.getPos().y;
             double z = hitResult.getPos().z;
@@ -76,7 +80,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                 if (entity instanceof LivingEntity) {
                     entity.setFireTicks(250);
                     float distance = Math.max(entity.distanceTo(this), 1);
-                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage/distance);
+                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage*(1 - (4*distance-4) / playerData.hunLiLevel));
                 }
             }
         }
