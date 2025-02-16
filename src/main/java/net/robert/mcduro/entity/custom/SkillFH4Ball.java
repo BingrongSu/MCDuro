@@ -75,7 +75,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
             double z = hitResult.getPos().z;
             Box box = new Box(x - range, y - range, z - range,
                     x + range, y + range, z + range);
-            List<Entity> entities = this.getWorld().getOtherEntities(this, box);
+            List<Entity> entities = this.getWorld().getOtherEntities(this.getOwner(), box);
             for (Entity entity : entities) {
                 if (entity instanceof LivingEntity) {
                     entity.setFireTicks(250);

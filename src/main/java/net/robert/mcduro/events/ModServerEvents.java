@@ -61,7 +61,7 @@ public class ModServerEvents {
         });
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
-            List<ServerPlayerEntity> players = server.getOverworld().getPlayers();
+            List<ServerPlayerEntity> players = server.getPlayerManager().getPlayerList();
             for (ServerPlayerEntity player : players) {
                 PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
                 if (playerData.maxHunLi != 0) {
@@ -165,7 +165,7 @@ public class ModServerEvents {
                     PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
                     switch (n) {
                         case 0:
-                            FHSkills.skill1(player, server.getOverworld(), power, playerData.targets.isEmpty() ? null : new ArrayList<>(playerData.targets));
+                            FHSkills.skill1(player, player.getServerWorld(), power, playerData.targets.isEmpty() ? null : new ArrayList<>(playerData.targets));
                             break;
                         case 1:
                             FHSkills.skill2(player, power);

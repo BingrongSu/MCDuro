@@ -331,6 +331,13 @@ public class PlayerData {
         }
     }
 
+    public void clearStatusEffect(PlayerEntity player) {
+        if (!player.getWorld().isClient) {
+            statusEffects.clear();
+            syncStatusEffects(player);
+        }
+    }
+
     public void syncStatusEffects(PlayerEntity player) {
         if (!player.getWorld().isClient) {
             System.out.println("Server -> Original status effects: %s".formatted(statusEffects));

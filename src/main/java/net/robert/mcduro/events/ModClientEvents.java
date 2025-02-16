@@ -244,6 +244,13 @@ public class ModClientEvents {
             showedWuhun.clear();
         });
 
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.player == null) return;
+            for (int i = 0; i < 9; i++) {
+                MinecraftClient.getInstance().options.hotbarKeys[i].setPressed(false);
+            }
+        });
+
         // TODO 01/11/2025 魂技蓄力时间：根据修为-修为越高时间越短
     }
 
