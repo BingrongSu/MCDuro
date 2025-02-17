@@ -25,6 +25,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
     private final float damage;
     private final double range;
     private final List<Entity> targets;
+    private Vec3d pos1, pos2;
 
     public SkillFH4Ball(World world, LivingEntity owner, double velocityX, double velocityY, double velocityZ, int explosionPower, float damage, double range, List<Entity> targets) {
         super(EntityType.FIREBALL, owner, velocityX, velocityY, velocityZ, world);
@@ -89,33 +90,15 @@ public class SkillFH4Ball extends AbstractFireballEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!this.getWorld().isClient && Objects.nonNull(targets) && !targets.isEmpty()) {
-            Vec3d dir = targets.get(0).getPos().subtract(this.getPos());
-            this.setVelocity(dir.normalize());
-            if (Objects.isNull(Objects.requireNonNull(this.getServer()).getOverworld().getEntity(targets.get(0).getUuid()))) {
-                targets.remove(0);
-            }
-        }
-    }
-
-    private void createLava() {
         if (!this.getWorld().isClient) {
-            ServerWorld world = (ServerWorld) this.getWorld();
-//            Runnable task = () -> {
-//                refresh(pos1, world, Blocks.LAVA);
-//            };
-//            MCDuro.scheduledTask(task, 15L);
-//            task = () -> {
-//                refresh(pos1, world, Blocks.AIR);
-//            };
-//            MCDuro.scheduledTask(task, 45L);
-            Runnable task = () -> {
-                world.spawnParticles(ParticleTypes.LAVA, this.getX(), this.getY(), this.getZ(), 5000, 3, 10, 3, 1);
-            };
-            for (int i = 0; i < 20; i++) {
-                MCDuro.scheduledTask(task, 10L*i);
+            if (Objects.nonNull(targets) && !targets.isEmpty()) {
+                Vec3d dir = targets.get(0).getPos().subtract(this.getPos());
+                this.setVelocity(dir.normalize());
+                if (Objects.isNull(Objects.requireNonNull(this.getServer()).getOverworld().getEntity(targets.get(0).getUuid()))) {
+                    targets.remove(0);
+                }
             }
-
+            
         }
     }
 
