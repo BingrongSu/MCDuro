@@ -3,6 +3,7 @@
   "package": "net.robert.mcduro.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ClampedEntityAttributeMixin",
     "InGameHudMixin",
     "ZombieEntityMixin"
   ],

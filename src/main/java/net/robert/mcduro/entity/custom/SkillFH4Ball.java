@@ -6,14 +6,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractFireballEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.robert.mcduro.MCDuro;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
 
@@ -87,6 +85,25 @@ public class SkillFH4Ball extends AbstractFireballEntity {
         }
     }
 
+    private void rangeDamage(Vec3d pos) {
+        if (!this.getWorld().isClient) {
+            PlayerData playerData = StateSaverAndLoader.getPlayerState((PlayerEntity) this.getOwner());
+            double x = pos.x;
+            double y = pos.y;
+            double z = pos.z;
+            Box box = new Box(x - range, y - range, z - range,
+                    x + range, y + range, z + range);
+            List<Entity> entities = this.getWorld().getOtherEntities(this.getOwner(), box);
+            for (Entity entity : entities) {
+                if (entity instanceof LivingEntity) {
+                    entity.setFireTicks(250);
+                    float distance = Math.max(entity.distanceTo(this), 1);
+                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage*(1 - (4*distance-4) / playerData.hunLiLevel));
+                }
+            }
+        }
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -98,7 +115,11 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                     targets.remove(0);
                 }
             }
-            System.out.println(this.getVelocity());
+            if (this.getWorld().getBlockState(this.getBlockPos()).isIn(BlockTags.PORTALS)) {
+                rangeDamage(this.getPos());
+                this.getWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, true, World.ExplosionSourceType.NONE);
+                this.discard();
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package net.robert.mcduro.events;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -11,6 +12,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -257,6 +259,14 @@ public class ModServerEvents {
         ServerPlayNetworking.registerGlobalReceiver(ModEvents.LOCKED_PLAYER, (server, player, handler, buf, sender) -> {
             PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
             playerData.lockOn(player);
+        });
+
+        ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+            if (entity instanceof PlayerEntity player) {
+                PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+                playerData.clearStatusEffect(player);
+                System.out.println("Clear all the status effects of player %s".formatted(player.getName().getString()));
+            }
         });
     }
     // TODO 01/11/2025 后期添加生物群系-星斗大森林

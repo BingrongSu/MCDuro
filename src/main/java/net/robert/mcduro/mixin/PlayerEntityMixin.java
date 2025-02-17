@@ -35,15 +35,4 @@ public abstract class PlayerEntityMixin {
             }
         }
     }
-
-    @Inject(at = @At("HEAD"), method = "onDeath", cancellable = true)
-    public void onDeath(DamageSource damageSource, CallbackInfo ci) {
-        World world = Objects.requireNonNull(damageSource.getAttacker()).getWorld();
-        if (!world.isClient) {
-            PlayerEntity player = Objects.requireNonNull(world.getPlayerByUuid(gameProfile.getId()));
-            PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-            playerData.clearStatusEffect(player);
-            System.out.println("Server -> Clear player status");
-        }
-    }
 }

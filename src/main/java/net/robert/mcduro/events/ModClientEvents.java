@@ -55,14 +55,14 @@ public class ModClientEvents {
             playerData.maxHunLi = buf.readInt();
             PlayerEntity player = client.player;
             assert player != null;
-            System.out.println("Client: Max Hun Li set to: " + playerData.maxHunLi);
+//            System.out.println("Client: Max Hun Li set to: " + playerData.maxHunLi);
         });
 
         ClientPlayNetworking.registerGlobalReceiver(ModEvents.SET_HUN_LI, (client, handler, buf, sender) -> {
             playerData.hunLi = buf.readInt();
             PlayerEntity player = client.player;
             assert player != null;
-            System.out.println("Client: Hun Li set to: " + playerData.hunLi);
+//            System.out.println("Client: Hun Li set to: " + playerData.hunLi);
         });
 
         ClientPlayNetworking.registerGlobalReceiver(ModEvents.SET_HUN_LI_LEVEL, (client, handler, buf, sender) -> {
