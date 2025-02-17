@@ -98,7 +98,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                     targets.remove(0);
                 }
             }
-            
+
         }
     }
 
