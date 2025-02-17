@@ -3,6 +3,7 @@ package net.robert.mcduro.mixin;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
@@ -42,6 +43,7 @@ public abstract class PlayerEntityMixin {
             PlayerEntity player = Objects.requireNonNull(world.getPlayerByUuid(gameProfile.getId()));
             PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
             playerData.clearStatusEffect(player);
+            System.out.println("Server -> Clear player status");
         }
     }
 }

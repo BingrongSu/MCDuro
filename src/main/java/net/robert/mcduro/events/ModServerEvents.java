@@ -153,6 +153,9 @@ public class ModServerEvents {
             for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
                 PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
                 playerData.delNullTargets(player);
+                if (!playerData.listOfAllys().contains(player.getName().getString())) {
+                    playerData.addAlly(player);
+                }
             }
         });
 
