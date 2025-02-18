@@ -7,14 +7,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractFireballEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.robert.mcduro.MCDuro;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
 
@@ -57,7 +55,6 @@ public class SkillFH4Ball extends AbstractFireballEntity {
 //            createLava(hitResult.getPos());
             }
 //            this.createLava();
-            System.out.println("Created explotion,with "+this.explosionPower);
             this.getWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, true, World.ExplosionSourceType.NONE);
             this.discard();
         }
@@ -83,6 +80,25 @@ public class SkillFH4Ball extends AbstractFireballEntity {
             double x = hitResult.getPos().x;
             double y = hitResult.getPos().y;
             double z = hitResult.getPos().z;
+            Box box = new Box(x - range, y - range, z - range,
+                    x + range, y + range, z + range);
+            List<Entity> entities = this.getWorld().getOtherEntities(this.getOwner(), box);
+            for (Entity entity : entities) {
+                if (entity instanceof LivingEntity) {
+                    entity.setFireTicks(250);
+                    float distance = Math.max(entity.distanceTo(this), 1);
+                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage*(1 - (4*distance-4) / playerData.hunLiLevel));
+                }
+            }
+        }
+    }
+
+    private void rangeDamage(Vec3d pos) {
+        if (!this.getWorld().isClient) {
+            PlayerData playerData = StateSaverAndLoader.getPlayerState((PlayerEntity) this.getOwner());
+            double x = pos.x;
+            double y = pos.y;
+            double z = pos.z;
             Box box = new Box(x - range, y - range, z - range,
                     x + range, y + range, z + range);
             List<Entity> entities = this.getWorld().getOtherEntities(this.getOwner(), box);
@@ -130,6 +146,11 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                 pw = this.getWorld();
                 System.out.println(pw);
 
+            }
+            if (this.getWorld().getBlockState(this.getBlockPos()).isIn(BlockTags.PORTALS)) {
+                rangeDamage(this.getPos());
+                this.getWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, true, World.ExplosionSourceType.NONE);
+                this.discard();
             }
 
 

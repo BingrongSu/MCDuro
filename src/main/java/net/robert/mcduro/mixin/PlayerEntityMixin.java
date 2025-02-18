@@ -3,6 +3,7 @@ package net.robert.mcduro.mixin;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
@@ -32,16 +33,6 @@ public abstract class PlayerEntityMixin {
                 PlayerData playerData2 = StateSaverAndLoader.getPlayerState(Objects.requireNonNull(attacker.getWorld().getPlayerByUuid(gameProfile.getId())));
                 playerData2.refreshAttacker(attacker);
             }
-        }
-    }
-
-    @Inject(at = @At("HEAD"), method = "onDeath", cancellable = true)
-    public void onDeath(DamageSource damageSource, CallbackInfo ci) {
-        World world = Objects.requireNonNull(damageSource.getAttacker()).getWorld();
-        if (!world.isClient) {
-            PlayerEntity player = Objects.requireNonNull(world.getPlayerByUuid(gameProfile.getId()));
-            PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-            playerData.clearStatusEffect(player);
         }
     }
 }

@@ -55,7 +55,7 @@ public class PlayerData {
             MinecraftServer server = world.getServer();
             PacketByteBuf data = PacketByteBufs.create();
             data.writeInt(hunLi);
-            System.out.println("Server: Hun Li Set To: " + hunLi);
+//            System.out.println("Server: Hun Li Set To: " + hunLi);
             assert server != null;
             ServerPlayerEntity playerEntity = server.getPlayerManager().getPlayer(player.getUuid());
             server.execute(() -> {
@@ -74,25 +74,6 @@ public class PlayerData {
         ServerPlayerEntity serverPlayer = server.getPlayerManager().getPlayer(player.getUuid());
         assert serverPlayer != null;
         if (!world.isClient && amount != 0) {
-//            maxHunLi += amount;
-//            if (maxHunLi < 0) {
-//                maxHunLi = 0;
-//                return false;
-//            }
-//            if (maxHunLi >= Helper.level2HunLi(hunLiLevel+1)) {
-//                if (hunLiLevel % 10 == 0) {
-//                    maxHunLi -= amount;
-//                    System.out.println("到达瓶颈，无法突破！");
-//                    return false;
-//                }
-//                else {
-//                    hunLiLevel ++;
-//                    PacketByteBuf buf = PacketByteBufs.create();
-//                    buf.writeInt(hunLiLevel);
-//                    ServerPlayNetworking.send(serverPlayer, ModEvents.SET_HUN_LI_LEVEL, buf);
-//                    System.out.println("成功突破到下一级! ");
-//                }
-//            }
             maxHunLi = Helper.increaseMaxHunLi(maxHunLi, amount, player);
             hunLiLevel = Helper.hunLi2level(maxHunLi);
             // 向客户端发送数据
@@ -100,7 +81,7 @@ public class PlayerData {
             data1.writeInt(maxHunLi);
             PacketByteBuf data2 = PacketByteBufs.create();
             data2.writeInt(hunLiLevel);
-            System.out.println("Server -> Max Hun Li Set To: " + maxHunLi);
+//            System.out.println("Server -> Max Hun Li Set To: " + maxHunLi);
             server.execute(() -> {
                 ServerPlayNetworking.send(serverPlayer, ModEvents.SET_MAX_HUN_LI, data1);
                 ServerPlayNetworking.send(serverPlayer, ModEvents.SET_HUN_LI_LEVEL, data2);
