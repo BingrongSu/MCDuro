@@ -1,16 +1,21 @@
 package net.robert.mcduro.entity.custom;
 
+import net.minecraft.block.AbstractFireBlock;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractFireballEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
+import net.minecraft.entity.projectile.SmallFireballEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -21,7 +26,7 @@ import net.robert.mcduro.player.StateSaverAndLoader;
 import java.util.List;
 import java.util.Objects;
 
-public class SkillFH5Ball extends AbstractFireballEntity {
+public class SkillFH5Ball extends SmallFireballEntity {
     private final float damage;
     private final double range;
     private final List<Entity> targets;
@@ -32,13 +37,14 @@ public class SkillFH5Ball extends AbstractFireballEntity {
     private World pw;// Previous Position, previous world
 
     public SkillFH5Ball(World world, LivingEntity owner, double velocityX, double velocityY, double velocityZ, float damage, double range, List<Entity> targets, int index) {
-        super(EntityType.SMALL_FIREBALL, owner, velocityX, velocityY, velocityZ, world);
+        super(world, owner, velocityX, velocityY, velocityZ);
         this.directionX=velocityX;
         this.directionY=velocityY;
         this.directionZ=velocityZ;
         this.damage = damage;
         this.range = 0.5 * range;
         this.targets = targets;
+        this.setPosition(owner.getEyePos().add(owner.getRotationVector().multiply(0.5d)));
     }
 
     @Override
@@ -56,11 +62,10 @@ public class SkillFH5Ball extends AbstractFireballEntity {
                 }
             }
         }
-        super.onCollision(hitResult);
         if (!this.getWorld().isClient) {
             rangeDamage(hitResult);
-            this.discard();
         }
+        super.onCollision(hitResult);
     }
 
     @Override
@@ -146,7 +151,7 @@ public class SkillFH5Ball extends AbstractFireballEntity {
                 }
                 Vec3d adden = (this.getPos().subtract(pp)).multiply(1/(this.getPos().subtract(pp)).length());
                 Vec3d velocity = (this.getPos().subtract(pp)).add(adden.multiply(powerr.length())).multiply(g);
-                this.setVelocity(velocity.normalize().multiply(Math.min(9d, velocity.length() * 1.5d)));
+                this.setVelocity(velocity.normalize().multiply(Math.min(5d, velocity.length() * 1.2d)));
                 pp = this.getPos();
                 pw = this.getWorld();
 

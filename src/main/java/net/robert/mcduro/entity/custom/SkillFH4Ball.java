@@ -149,7 +149,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                 }
                 Vec3d adden = (this.getPos().subtract(pp)).multiply(1/(this.getPos().subtract(pp)).length());
                 Vec3d velocity = (this.getPos().subtract(pp)).add(adden.multiply(powerr.length())).multiply(g);
-                this.setVelocity(velocity.normalize().multiply(Math.min(7d, velocity.length() * 1.5d)));
+                this.setVelocity(velocity.normalize().multiply(Math.min(7D, velocity.length() * 1.3d)));
                 pp = this.getPos();
                 pw = this.getWorld();
 
