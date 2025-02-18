@@ -8,6 +8,8 @@ import net.robert.mcduro.MCDuro;
 public class ModGameRules {
     public static final GameRules.Key<GameRules.BooleanRule> LIMIT_SOUL_HOSTILE_SPAWN =
             GameRuleRegistry.register("limitSoulHostileSpawn", GameRules.Category.MOBS, GameRuleFactory.createBooleanRule(true));
+    public static final GameRules.Key<GameRules.BooleanRule> DO_EXPLOSIVE_SKILLS_DESTROY_BLOCKS =
+            GameRuleRegistry.register("doExplosiveSkillsDestroyBlocks", GameRules.Category.MOBS, GameRuleFactory.createBooleanRule(false));
     public static void registerGameRules() {
         MCDuro.LOGGER.info("Registering Mod Game Rules.");
     }

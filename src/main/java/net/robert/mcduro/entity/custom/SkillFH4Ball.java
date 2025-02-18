@@ -7,11 +7,13 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractFireballEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.robert.mcduro.game.ModGameRules;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
 
@@ -23,7 +25,6 @@ public class SkillFH4Ball extends AbstractFireballEntity {
     private final float damage;
     private final double range;
     private final List<Entity> targets;
-    private Vec3d pos1, pos2;
 
     public SkillFH4Ball(World world, LivingEntity owner, double velocityX, double velocityY, double velocityZ, int explosionPower, float damage, double range, List<Entity> targets) {
         super(EntityType.FIREBALL, owner, velocityX, velocityY, velocityZ, world);
@@ -37,17 +38,8 @@ public class SkillFH4Ball extends AbstractFireballEntity {
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);
         if (!this.getWorld().isClient) {
-            if (hitResult instanceof EntityHitResult) {
-                if (!(((EntityHitResult) hitResult).getEntity() instanceof SkillFH4Ball)) {
-                    rangeDamage(hitResult);
-//                createLava(hitResult.getPos());
-                }
-            } else {
-                rangeDamage(hitResult);
-//            createLava(hitResult.getPos());
-            }
-//            this.createLava();
-            this.getWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, true, World.ExplosionSourceType.NONE);
+            rangeDamage(hitResult);
+            this.explosion((ServerWorld) this.getWorld());
             this.discard();
         }
     }
@@ -117,10 +109,14 @@ public class SkillFH4Ball extends AbstractFireballEntity {
             }
             if (this.getWorld().getBlockState(this.getBlockPos()).isIn(BlockTags.PORTALS)) {
                 rangeDamage(this.getPos());
-                this.getWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, true, World.ExplosionSourceType.NONE);
+                this.explosion((ServerWorld) this.getWorld());
                 this.discard();
             }
         }
+    }
+
+    public void explosion(ServerWorld world) {
+        world.createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, true, world.getGameRules().getBoolean(ModGameRules.DO_EXPLOSIVE_SKILLS_DESTROY_BLOCKS) ? World.ExplosionSourceType.MOB : World.ExplosionSourceType.NONE);
     }
 
     public void writeCustomDataToNbt(NbtCompound nbt) {

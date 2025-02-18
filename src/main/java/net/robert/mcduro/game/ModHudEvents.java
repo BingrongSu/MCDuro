@@ -10,6 +10,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -56,16 +57,21 @@ public class ModHudEvents {
             assert hitResult != null;
             if (hitResult.getType().equals(HitResult.Type.ENTITY)) {
                 EntityHitResult entityHitResult = (EntityHitResult) hitResult;
-                if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
-                    float health = livingEntity.getHealth();
-                    UUID uuid = livingEntity.getUuid();
-                    Text text01 = Text.of("Name: " + livingEntity.getName().getString() + "   UUID: " + uuid);
+                if (entityHitResult.getEntity() instanceof LivingEntity || entityHitResult.getEntity() instanceof MobEntity) {
+                    float health = 0f;
+                    if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
+                        health = livingEntity.getHealth();
+                    } else {
+                        health = ((MobEntity) entityHitResult.getEntity()).getHealth();
+                    }
+                    UUID uuid = entityHitResult.getEntity().getUuid();
+                    Text text01 = Text.of("Name: " + entityHitResult.getEntity().getName().getString() + "   UUID: " + uuid);
                     Text text02 = Text.of("Health: " + health);
                     y = 5;
                     context.drawText(textRenderer, text01, x, y, 0xff1111, true);
                     y += 10;
                     context.drawText(textRenderer, text02, x, y, 0xff1111, true);
-                    if (livingEntity instanceof HostileEntity) {
+                    if (entityHitResult.getEntity() instanceof HostileEntity) {
                         int year = -1;
                         if (ModClientEvents.mobsYear.containsKey(uuid)) {
                             year = ModClientEvents.mobsYear.get(uuid);
