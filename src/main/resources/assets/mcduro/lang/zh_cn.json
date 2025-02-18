@@ -1,6 +1,7 @@
 {
   "smith_smelting": "锻造熔炉",
   "gamerule.limitSoulHostileSpawn": "限制魂兽生成",
+  "gamerule.doExplosiveSkillsDestroyBlocks": "爆炸性魂技是否破坏方块",
   "itemGroup.mcduro_group1": "MC斗罗",
   "tips.closeWuhun": "武魂关闭",
   "wuhun.fengHuang": "邪火凤凰",

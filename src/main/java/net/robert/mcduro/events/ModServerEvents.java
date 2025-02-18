@@ -181,6 +181,9 @@ public class ModServerEvents {
                         case 3:
                             FHSkills.skill4(player, power, playerData.targets.isEmpty() ? null : new ArrayList<>(playerData.targets));
                             break;
+                        case 4:
+                            FHSkills.skill5(player, power, playerData.targets.isEmpty() ? null : new ArrayList<>(playerData.targets));
+                            break;
                     }
                     break;
                 case "xiangChang":

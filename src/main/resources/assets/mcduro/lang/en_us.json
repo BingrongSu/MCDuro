@@ -1,6 +1,7 @@
 {
   "smith_smelting": "Smith Smelting",
   "gamerule.limitSoulHostileSpawn": "Limit soul-hostile spawn",
+  "gamerule.doExplosiveSkillsDestroyBlocks": "Do explosive skills destroy blocks.",
   "itemGroup.mcduro_group1": "MC Duro Item Group 1",
   "tips.closeWuhun": "Martial soul has closed",
   "wuhun.fengHuang": "Fire Phoenix",

@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.robert.mcduro.entity.custom.SkillFH4Ball;
+import net.robert.mcduro.entity.custom.SkillFH5Ball;
 import net.robert.mcduro.math.Helper;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
@@ -150,37 +151,37 @@ public class FHSkills {
             double x = player.getRotationVector().x;
             double y = player.getRotationVector().y;
             double z = player.getRotationVector().z;
-            double v = 20d;
+            double v = 0.5d;
             SkillFH4Ball fireball = new SkillFH4Ball(player.getWorld(), player, x*v, y*v, z*v,
                     (int) (range), damage, range, targets);
             fireball.setPos(player.getX() + x*2, player.getY() + y*2, player.getZ() + z*2);
             player.getWorld().spawnEntity(fireball);
-            // 第一阶段
-            // 第二阶段 事件处理 - SkillFH4Ball 中注册完成
+
             playerData.increaseHunLi(-input, player);
         }
     }
 
-//    // 5. 凤凰流星雨
-//    public static void Skill5(PlayerEntity player) {
-//        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-//        float damage = playerData.years.get("fengHuang").get(4) / 50f;
-//        damage = damageBoosted(damage, player, playerData);
-//        double range = 0.5d * Math.log10(playerData.years.get("fengHuang").get(4));
-//        double v = 5;
-//        int n = (int) (5 * Math.log(playerData.years.get("fengHuang").get(4)));
-//        for (int i = 0; i < n; i++) {
-//            double vx = (player.getRotationVector().x + (Math.random() - 0.5d) / 5d) * v;
-//            double vy = (player.getRotationVector().y + (Math.random() - 0.5d) / 5d) * v;
-//            double vz = (player.getRotationVector().z + (Math.random() - 0.5d) / 5d) * v;
-//            double x = player.getEyePos().getX() + vx / v * 1.5;
-//            double y = player.getEyePos().getY() + vy / v * 1.5;
-//            double z = player.getEyePos().getZ() + vz / v * 1.5;
-//            SkillFH5Ball ball = new SkillFH5Ball(player.getWorld(), x, y, z, vx, vy, vz, damage, range, player);
-//            player.getWorld().spawnEntity(ball);
-//        }
-//    }
-//
+    // 5. 凤凰流星雨
+    public static void skill5(PlayerEntity player, double power, List<Entity> targets) {
+        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+        float damage = 10f;
+        damage = damageBoosted(damage, player, playerData);
+        double range = 1f;
+        range = rangeBoosted(range, player, playerData);
+        double v = 5;
+        int n = (int) (10);
+        for (int i = 0; i < n; i++) {
+            double vx = (player.getRotationVector().x + (Math.random() - 0.5d) / 5d) * v;
+            double vy = (player.getRotationVector().y + (Math.random() - 0.5d) / 5d) * v;
+            double vz = (player.getRotationVector().z + (Math.random() - 0.5d) / 5d) * v;
+            double x = player.getEyePos().getX() + vx / v * 1.5;
+            double y = player.getEyePos().getY() + vy / v * 1.5;
+            double z = player.getEyePos().getZ() + vz / v * 1.5;
+            SkillFH5Ball ball = new SkillFH5Ball(player.getWorld(), player, vx, vy, vz, damage, range, targets, i);
+            player.getWorld().spawnEntity(ball);
+        }
+    }
+
 //    // 6. 凤凰穿云击
 //    public static void Skill6(PlayerEntity player) {
 //        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);

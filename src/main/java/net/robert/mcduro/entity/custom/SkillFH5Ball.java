@@ -37,12 +37,25 @@ public class SkillFH5Ball extends AbstractFireballEntity {
         this.directionY=velocityY;
         this.directionZ=velocityZ;
         this.damage = damage;
-        this.range = range;
+        this.range = 0.5 * range;
         this.targets = targets;
     }
 
     @Override
     protected void onCollision(HitResult hitResult) {
+        HitResult.Type type = hitResult.getType();
+        if (type == HitResult.Type.ENTITY) {
+            EntityHitResult entityHitResult = (EntityHitResult) hitResult;
+            if (entityHitResult.getEntity() instanceof SkillFH4Ball ballEntity) {
+                if (Objects.equals(ballEntity.getOwner(), this.getOwner())) {
+                    return;
+                }
+            } else if (entityHitResult.getEntity() instanceof SkillFH5Ball ballEntity) {
+                if (Objects.equals(ballEntity.getOwner(), this.getOwner())) {
+                    return;
+                }
+            }
+        }
         super.onCollision(hitResult);
         if (!this.getWorld().isClient) {
             rangeDamage(hitResult);
@@ -57,6 +70,7 @@ public class SkillFH5Ball extends AbstractFireballEntity {
             Entity entity = entityHitResult.getEntity();
             Entity entity2 = this.getOwner();
             entity.damage(this.getDamageSources().fireball(this, entity2), 6.0F);
+            entity.setFireTicks(200);
             if (entity2 instanceof LivingEntity) {
                 this.applyDamageEffects((LivingEntity)entity2, entity);
             }
@@ -131,10 +145,10 @@ public class SkillFH5Ball extends AbstractFireballEntity {
                     this.setPosition(this.getPos().add(pv.multiply(2)));
                 }
                 Vec3d adden = (this.getPos().subtract(pp)).multiply(1/(this.getPos().subtract(pp)).length());
-                this.setVelocity((this.getPos().subtract(pp)).add(adden.multiply(powerr.length())).multiply((double)g));
+                Vec3d velocity = (this.getPos().subtract(pp)).add(adden.multiply(powerr.length())).multiply(g);
+                this.setVelocity(velocity.normalize().multiply(Math.min(9d, velocity.length() * 1.5d)));
                 pp = this.getPos();
                 pw = this.getWorld();
-                System.out.println(pw);
 
             }
             if (this.getWorld().getBlockState(this.getBlockPos()).isIn(BlockTags.PORTALS)) {

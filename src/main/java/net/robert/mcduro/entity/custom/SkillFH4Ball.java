@@ -45,6 +45,20 @@ public class SkillFH4Ball extends AbstractFireballEntity {
 
     @Override
     protected void onCollision(HitResult hitResult) {
+        HitResult.Type type = hitResult.getType();
+        if (type == HitResult.Type.ENTITY) {
+            EntityHitResult entityHitResult = (EntityHitResult) hitResult;
+            if (entityHitResult.getEntity() instanceof SkillFH4Ball ballEntity) {
+                if (Objects.equals(ballEntity.getOwner(), this.getOwner())) {
+                    return;
+                }
+            } else if (entityHitResult.getEntity() instanceof SkillFH5Ball ballEntity) {
+                if (Objects.equals(ballEntity.getOwner(), this.getOwner())) {
+                    return;
+                }
+            }
+
+        }
         super.onCollision(hitResult);
         if (!this.getWorld().isClient) {
             rangeDamage(hitResult);
@@ -111,7 +125,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
         if (!this.getWorld().isClient) {
             if (Objects.nonNull(targets) && !targets.isEmpty()) {
                 Vec3d dir = targets.get(0).getPos().subtract(this.getPos());
-                this.setVelocity(dir.normalize());
+                this.setVelocity(dir.normalize().multiply(8d));
                 if (Objects.isNull(Objects.requireNonNull(this.getServer()).getOverworld().getEntity(targets.get(0).getUuid()))) {
                     targets.remove(0);
                 }
@@ -135,10 +149,9 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                 }
                 Vec3d adden = (this.getPos().subtract(pp)).multiply(1/(this.getPos().subtract(pp)).length());
                 Vec3d velocity = (this.getPos().subtract(pp)).add(adden.multiply(powerr.length())).multiply(g);
-                this.setVelocity(velocity.normalize().multiply(Math.min(60d, velocity.length())));
+                this.setVelocity(velocity.normalize().multiply(Math.min(7d, velocity.length() * 1.5d)));
                 pp = this.getPos();
                 pw = this.getWorld();
-                System.out.println(pw);
 
             }
             if (this.getWorld().getBlockState(this.getBlockPos()).isIn(BlockTags.PORTALS)) {
