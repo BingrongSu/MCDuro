@@ -21,8 +21,7 @@ import net.robert.mcduro.player.StateSaverAndLoader;
 import java.util.List;
 import java.util.Objects;
 
-public class SkillFH4Ball extends AbstractFireballEntity {
-    private int explosionPower = 1;
+public class SkillFH5Ball extends AbstractFireballEntity {
     private final float damage;
     private final double range;
     private final List<Entity> targets;
@@ -32,12 +31,11 @@ public class SkillFH4Ball extends AbstractFireballEntity {
     private Vec3d pp,pv;
     private World pw;// Previous Position, previous world
 
-    public SkillFH4Ball(World world, LivingEntity owner, double velocityX, double velocityY, double velocityZ, int explosionPower, float damage, double range, List<Entity> targets) {
-        super(EntityType.FIREBALL, owner, velocityX, velocityY, velocityZ, world);
+    public SkillFH5Ball(World world, LivingEntity owner, double velocityX, double velocityY, double velocityZ, float damage, double range, List<Entity> targets, int index) {
+        super(EntityType.SMALL_FIREBALL, owner, velocityX, velocityY, velocityZ, world);
         this.directionX=velocityX;
         this.directionY=velocityY;
         this.directionZ=velocityZ;
-        this.explosionPower = explosionPower;
         this.damage = damage;
         this.range = range;
         this.targets = targets;
@@ -48,7 +46,6 @@ public class SkillFH4Ball extends AbstractFireballEntity {
         super.onCollision(hitResult);
         if (!this.getWorld().isClient) {
             rangeDamage(hitResult);
-            this.explosion((ServerWorld) this.getWorld());
             this.discard();
         }
     }
@@ -134,8 +131,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                     this.setPosition(this.getPos().add(pv.multiply(2)));
                 }
                 Vec3d adden = (this.getPos().subtract(pp)).multiply(1/(this.getPos().subtract(pp)).length());
-                Vec3d velocity = (this.getPos().subtract(pp)).add(adden.multiply(powerr.length())).multiply(g);
-                this.setVelocity(velocity.normalize().multiply(Math.min(60d, velocity.length())));
+                this.setVelocity((this.getPos().subtract(pp)).add(adden.multiply(powerr.length())).multiply((double)g));
                 pp = this.getPos();
                 pw = this.getWorld();
                 System.out.println(pw);
@@ -143,26 +139,8 @@ public class SkillFH4Ball extends AbstractFireballEntity {
             }
             if (this.getWorld().getBlockState(this.getBlockPos()).isIn(BlockTags.PORTALS)) {
                 rangeDamage(this.getPos());
-                this.explosion((ServerWorld) this.getWorld());
                 this.discard();
             }
         }
-    }
-
-    public void explosion(ServerWorld world) {
-        world.createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, true, world.getGameRules().getBoolean(ModGameRules.DO_EXPLOSIVE_SKILLS_DESTROY_BLOCKS) ? World.ExplosionSourceType.MOB : World.ExplosionSourceType.NONE);
-    }
-
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        nbt.putByte("ExplosionPower", (byte)this.explosionPower);
-    }
-
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        if (nbt.contains("ExplosionPower", 99)) {
-            this.explosionPower = nbt.getByte("ExplosionPower");
-        }
-
     }
 }

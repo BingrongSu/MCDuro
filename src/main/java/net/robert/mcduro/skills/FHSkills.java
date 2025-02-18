@@ -99,6 +99,8 @@ public class FHSkills {
                     break;
                 }
             }
+
+            world.setBlockState(pos, Blocks.FIRE.getDefaultState());
             for (Entity entity : entities) {
                 if (entity instanceof LivingEntity && !tmp.contains(entity)) {
                     entity.setFireTicks(200);
@@ -148,7 +150,7 @@ public class FHSkills {
             double x = player.getRotationVector().x;
             double y = player.getRotationVector().y;
             double z = player.getRotationVector().z;
-            double v = 5d;
+            double v = 20d;
             SkillFH4Ball fireball = new SkillFH4Ball(player.getWorld(), player, x*v, y*v, z*v,
                     (int) (range), damage, range, targets);
             fireball.setPos(player.getX() + x*2, player.getY() + y*2, player.getZ() + z*2);
