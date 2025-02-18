@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractFireballEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
@@ -25,10 +26,17 @@ public class SkillFH4Ball extends AbstractFireballEntity {
     private final float damage;
     private final double range;
     private final List<Entity> targets;
-    private Vec3d pos1, pos2;
+    private final double directionX;
+    private final double directionY;
+    private final double directionZ;
+    private Vec3d pp,pv;
+    private World pw;// Previous Position, previous world
 
     public SkillFH4Ball(World world, LivingEntity owner, double velocityX, double velocityY, double velocityZ, int explosionPower, float damage, double range, List<Entity> targets) {
         super(EntityType.FIREBALL, owner, velocityX, velocityY, velocityZ, world);
+        this.directionX=velocityX;
+        this.directionY=velocityY;
+        this.directionZ=velocityZ;
         this.explosionPower = explosionPower;
         this.damage = damage;
         this.range = 0.25 * range;
@@ -49,6 +57,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
 //            createLava(hitResult.getPos());
             }
 //            this.createLava();
+            System.out.println("Created explotion,with "+this.explosionPower);
             this.getWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), (float)this.explosionPower, true, World.ExplosionSourceType.NONE);
             this.discard();
         }
@@ -97,8 +106,33 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                 if (Objects.isNull(Objects.requireNonNull(this.getServer()).getOverworld().getEntity(targets.get(0).getUuid()))) {
                     targets.remove(0);
                 }
+            } else if(pp == null){
+                pp = this.getPos();
+                pw = this.getWorld();
+            }else{
+                double d1 = Math.sqrt(directionX* directionX + directionY * directionY + directionZ * directionZ);
+                if (d1 != 0.0) {
+                    this.powerX = directionX / d1 * 0.1;
+                    this.powerY = directionY / d1 * 0.1;
+                    this.powerZ = directionZ / d1 * 0.1;
+                }
+                Vec3d powerr = new Vec3d(this.powerX,this.powerY,this.powerZ);
+                ProjectileUtil.setRotationFromVelocity(this, 0.2F);
+                float g = this.getDrag();
+                if(this.getWorld()==pw) {
+                    pv = this.getPos().subtract(pp);
+                }else{
+                    this.setPosition(this.getPos().add(pv.multiply(2)));
+                }
+                Vec3d adden = (this.getPos().subtract(pp)).multiply(1/(this.getPos().subtract(pp)).length());
+                this.setVelocity((this.getPos().subtract(pp)).add(adden.multiply(powerr.length())).multiply((double)g));
+                pp = this.getPos();
+                pw = this.getWorld();
+                System.out.println(pw);
+
             }
-            
+
+
         }
     }
 
