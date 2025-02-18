@@ -39,7 +39,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
         this.directionZ=velocityZ;
         this.explosionPower = explosionPower;
         this.damage = damage;
-        this.range = 0.25 * range;
+        this.range = range;
         this.targets = targets;
     }
 

@@ -150,7 +150,7 @@ public class FHSkills {
             double z = player.getRotationVector().z;
             double v = 5d;
             SkillFH4Ball fireball = new SkillFH4Ball(player.getWorld(), player, x*v, y*v, z*v,
-                    (int) (range*2d), damage, range * 0.5, targets);
+                    (int) (range), damage, range, targets);
             fireball.setPos(player.getX() + x*2, player.getY() + y*2, player.getZ() + z*2);
             player.getWorld().spawnEntity(fireball);
             // 第一阶段
