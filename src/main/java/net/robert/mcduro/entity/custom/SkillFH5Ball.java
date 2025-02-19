@@ -56,19 +56,22 @@ public class SkillFH5Ball extends SmallFireballEntity {
 
     @Override
     protected void onCollision(HitResult hitResult) {
-//        HitResult.Type type = hitResult.getType();
-//        if (type == HitResult.Type.ENTITY) {
-//            EntityHitResult entityHitResult = (EntityHitResult) hitResult;
-//            if (entityHitResult.getEntity() instanceof SkillFH4Ball ballEntity) {
-//                if (Objects.equals(ballEntity.getOwner(), this.getOwner())) {
-//                    return;
-//                }
-//            } else if (entityHitResult.getEntity() instanceof SkillFH5Ball ballEntity) {
-//                if (Objects.equals(ballEntity.getOwner(), this.getOwner())) {
-//                    return;
-//                }
-//            }
-//        }
+        HitResult.Type type = hitResult.getType();
+        if (type == HitResult.Type.ENTITY) {
+            EntityHitResult entityHitResult = (EntityHitResult) hitResult;
+            System.out.printf("%d -> hit %s%n", index, entityHitResult.getEntity().getName().getString());
+            if (entityHitResult.getEntity() instanceof SkillFH4Ball ballEntity) {
+                if (Objects.equals(ballEntity.getOwner(), this.getOwner())) {
+                    return;
+                }
+                return;
+            } else if (entityHitResult.getEntity() instanceof SkillFH5Ball ballEntity) {
+                if (Objects.equals(ballEntity.getOwner(), this.getOwner())) {
+                    return;
+                }
+                return;
+            }
+        }
         if (!this.getWorld().isClient) {
             rangeDamage(hitResult);
         }
@@ -91,6 +94,7 @@ public class SkillFH5Ball extends SmallFireballEntity {
 
     private void rangeDamage(HitResult hitResult) {
         if (!this.getWorld().isClient) {
+            System.out.printf("%d -> Begin range damage%n", index);
             PlayerData playerData = StateSaverAndLoader.getPlayerState((PlayerEntity) this.getOwner());
             double x = hitResult.getPos().x;
             double y = hitResult.getPos().y;
@@ -99,10 +103,12 @@ public class SkillFH5Ball extends SmallFireballEntity {
                     x + range, y + range, z + range);
             List<Entity> entities = this.getWorld().getOtherEntities(this.getOwner(), box);
             for (Entity entity : entities) {
-                if (entity instanceof LivingEntity) {
-                    entity.setFireTicks(250);
+                if (entity instanceof LivingEntity livingEntity) {
+                    livingEntity.setFireTicks(250);
                     float distance = Math.max(entity.distanceTo(this), 1);
-                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage);
+//                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage);
+                    livingEntity.damage(this.getDamageSources().generic(), damage);
+                    System.out.printf("%d -> damage %s with %.2f, %.2f left%n", index, entity.getName().getString(), damage, livingEntity.getHealth());
                 }
             }
         }
@@ -110,6 +116,7 @@ public class SkillFH5Ball extends SmallFireballEntity {
 
     private void rangeDamage(Vec3d pos) {
         if (!this.getWorld().isClient) {
+            System.out.printf("%d -> Begin range damage%n", index);
             PlayerData playerData = StateSaverAndLoader.getPlayerState((PlayerEntity) this.getOwner());
             double x = pos.x;
             double y = pos.y;
@@ -118,10 +125,11 @@ public class SkillFH5Ball extends SmallFireballEntity {
                     x + range, y + range, z + range);
             List<Entity> entities = this.getWorld().getOtherEntities(this.getOwner(), box);
             for (Entity entity : entities) {
-                if (entity instanceof LivingEntity) {
-                    entity.setFireTicks(250);
+                if (entity instanceof LivingEntity livingEntity) {
+                    livingEntity.setFireTicks(250);
                     float distance = Math.max(entity.distanceTo(this), 1);
-                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage*(1 - (4*distance-4) / playerData.hunLiLevel));
+                    livingEntity.damage(this.getDamageSources().generic(), damage);
+                    System.out.printf("%d -> damage %s with %.2f, %.2f left%n", index, entity.getName().getString(), damage, livingEntity.getHealth());
                 }
             }
         }

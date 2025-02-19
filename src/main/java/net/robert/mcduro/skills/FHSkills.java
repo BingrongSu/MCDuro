@@ -169,7 +169,7 @@ public class FHSkills {
         double range = 3F;
         range = rangeBoosted(range, player, playerData);
         double v = 5;
-        int n = (int) (100);
+        int n = (int) (10);
         for (int i = 0; i < n; i++) {
             double vx = (player.getRotationVector().x + (Math.random() - 0.5d) / 5d) * v;
             double vy = (player.getRotationVector().y + (Math.random() - 0.5d) / 5d) * v;
