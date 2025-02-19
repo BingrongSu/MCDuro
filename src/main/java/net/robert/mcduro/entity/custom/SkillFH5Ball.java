@@ -23,6 +23,7 @@ import net.robert.mcduro.game.ModGameRules;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +36,8 @@ public class SkillFH5Ball extends SmallFireballEntity {
     private final double directionZ;
     private Vec3d pp,pv;
     private World pw;// Previous Position, previous world
+    private Entity target = null;
+    private final int index;
 
     public SkillFH5Ball(World world, LivingEntity owner, double velocityX, double velocityY, double velocityZ, float damage, double range, List<Entity> targets, int index) {
         super(world, owner, velocityX, velocityY, velocityZ);
@@ -44,24 +47,28 @@ public class SkillFH5Ball extends SmallFireballEntity {
         this.damage = damage;
         this.range = 0.5 * range;
         this.targets = targets;
+        this.index = index;
         this.setPosition(owner.getEyePos().add(owner.getRotationVector().multiply(0.5d)));
+        if (!Objects.isNull(targets) && !targets.isEmpty()) {
+            this.target = targets.get(index % targets.size());
+        }
     }
 
     @Override
     protected void onCollision(HitResult hitResult) {
-        HitResult.Type type = hitResult.getType();
-        if (type == HitResult.Type.ENTITY) {
-            EntityHitResult entityHitResult = (EntityHitResult) hitResult;
-            if (entityHitResult.getEntity() instanceof SkillFH4Ball ballEntity) {
-                if (Objects.equals(ballEntity.getOwner(), this.getOwner())) {
-                    return;
-                }
-            } else if (entityHitResult.getEntity() instanceof SkillFH5Ball ballEntity) {
-                if (Objects.equals(ballEntity.getOwner(), this.getOwner())) {
-                    return;
-                }
-            }
-        }
+//        HitResult.Type type = hitResult.getType();
+//        if (type == HitResult.Type.ENTITY) {
+//            EntityHitResult entityHitResult = (EntityHitResult) hitResult;
+//            if (entityHitResult.getEntity() instanceof SkillFH4Ball ballEntity) {
+//                if (Objects.equals(ballEntity.getOwner(), this.getOwner())) {
+//                    return;
+//                }
+//            } else if (entityHitResult.getEntity() instanceof SkillFH5Ball ballEntity) {
+//                if (Objects.equals(ballEntity.getOwner(), this.getOwner())) {
+//                    return;
+//                }
+//            }
+//        }
         if (!this.getWorld().isClient) {
             rangeDamage(hitResult);
         }
@@ -79,7 +86,6 @@ public class SkillFH5Ball extends SmallFireballEntity {
             if (entity2 instanceof LivingEntity) {
                 this.applyDamageEffects((LivingEntity)entity2, entity);
             }
-
         }
     }
 
@@ -96,7 +102,7 @@ public class SkillFH5Ball extends SmallFireballEntity {
                 if (entity instanceof LivingEntity) {
                     entity.setFireTicks(250);
                     float distance = Math.max(entity.distanceTo(this), 1);
-                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage*(1 - (4*distance-4) / playerData.hunLiLevel));
+                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage);
                 }
             }
         }
@@ -125,37 +131,50 @@ public class SkillFH5Ball extends SmallFireballEntity {
     public void tick() {
         super.tick();
         if (!this.getWorld().isClient) {
-            if (Objects.nonNull(targets) && !targets.isEmpty()) {
-                Vec3d dir = targets.get(0).getPos().subtract(this.getPos());
-                this.setVelocity(dir.normalize());
-                if (Objects.isNull(Objects.requireNonNull(this.getServer()).getOverworld().getEntity(targets.get(0).getUuid()))) {
-                    targets.remove(0);
+            if (Objects.nonNull(targets)) {
+                List<Entity> tmp = new ArrayList<>(targets);
+                tmp.forEach(entity -> {
+                    if (Objects.isNull(entity) || Objects.isNull(Objects.requireNonNull(this.getServer()).getOverworld().getEntity(entity.getUuid()))) {
+                        targets.remove(entity);
+                    }
+                });
+                if (Objects.isNull(target) && !targets.isEmpty()) {
+                    target = targets.get(this.index % targets.size());
+                } else {
+                    this.target = null;
                 }
-            } else if(pp == null){
-                pp = this.getPos();
-                pw = this.getWorld();
-            }else{
-                double d1 = Math.sqrt(directionX* directionX + directionY * directionY + directionZ * directionZ);
-                if (d1 != 0.0) {
-                    this.powerX = directionX / d1 * 0.1;
-                    this.powerY = directionY / d1 * 0.1;
-                    this.powerZ = directionZ / d1 * 0.1;
+                if (Objects.nonNull(target)) {
+                    Vec3d dir = target.getPos().subtract(this.getPos());
+                    this.setVelocity(dir.normalize().multiply(5d));
                 }
-                Vec3d powerr = new Vec3d(this.powerX,this.powerY,this.powerZ);
-                ProjectileUtil.setRotationFromVelocity(this, 0.2F);
-                float g = this.getDrag();
-                if(this.getWorld()==pw) {
-                    pv = this.getPos().subtract(pp);
-                }else{
-                    this.setPosition(this.getPos().add(pv.multiply(2)));
-                }
-                Vec3d adden = (this.getPos().subtract(pp)).multiply(1/(this.getPos().subtract(pp)).length());
-                Vec3d velocity = (this.getPos().subtract(pp)).add(adden.multiply(powerr.length())).multiply(g);
-                this.setVelocity(velocity.normalize().multiply(Math.min(5d, velocity.length() * 1.2d)));
-                pp = this.getPos();
-                pw = this.getWorld();
-
             }
+            if (Objects.isNull(this.target)) {
+                if(pp == null){
+                    pp = this.getPos();
+                    pw = this.getWorld();
+                }else{
+                    double d1 = Math.sqrt(directionX * directionX + directionY * directionY + directionZ * directionZ);
+                    if (d1 != 0.0) {
+                        this.powerX = directionX / d1 * 0.1;
+                        this.powerY = directionY / d1 * 0.1;
+                        this.powerZ = directionZ / d1 * 0.1;
+                    }
+                    Vec3d powerr = new Vec3d(this.powerX, this.powerY, this.powerZ);
+                    ProjectileUtil.setRotationFromVelocity(this, 0.2F);
+                    float g = this.getDrag();
+                    if (this.getWorld() == pw) {
+                        pv = this.getPos().subtract(pp);
+                    } else {
+                        this.setPosition(this.getPos().add(pv.multiply(2)));
+                    }
+                    Vec3d adden = (this.getPos().subtract(pp)).multiply(1 / (this.getPos().subtract(pp)).length());
+                    Vec3d velocity = (this.getPos().subtract(pp)).add(adden.multiply(powerr.length())).multiply(g);
+                    this.setVelocity(velocity.normalize().multiply(Math.min(5d, velocity.length() * 1.2d)));
+
+                }
+            }
+            pp = this.getPos();
+            pw = this.getWorld();
             if (this.getWorld().getBlockState(this.getBlockPos()).isIn(BlockTags.PORTALS)) {
                 rangeDamage(this.getPos());
                 this.discard();

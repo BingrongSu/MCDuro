@@ -125,7 +125,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
         if (!this.getWorld().isClient) {
             if (Objects.nonNull(targets) && !targets.isEmpty()) {
                 Vec3d dir = targets.get(0).getPos().subtract(this.getPos());
-                this.setVelocity(dir.normalize().multiply(8d));
+                this.setVelocity(dir.normalize().multiply(7d));
                 if (Objects.isNull(Objects.requireNonNull(this.getServer()).getOverworld().getEntity(targets.get(0).getUuid()))) {
                     targets.remove(0);
                 }

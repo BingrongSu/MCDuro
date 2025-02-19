@@ -151,7 +151,7 @@ public class FHSkills {
             double x = player.getRotationVector().x;
             double y = player.getRotationVector().y;
             double z = player.getRotationVector().z;
-            double v = 0.5d;
+            double v = 1d;
             SkillFH4Ball fireball = new SkillFH4Ball(player.getWorld(), player, x*v, y*v, z*v,
                     (int) (range), damage, range, targets);
             fireball.setPos(player.getX() + x*2, player.getY() + y*2, player.getZ() + z*2);
@@ -166,17 +166,14 @@ public class FHSkills {
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
         float damage = 10f;
         damage = damageBoosted(damage, player, playerData);
-        double range = 1f;
+        double range = 3F;
         range = rangeBoosted(range, player, playerData);
         double v = 5;
-        int n = (int) (10);
+        int n = (int) (100);
         for (int i = 0; i < n; i++) {
             double vx = (player.getRotationVector().x + (Math.random() - 0.5d) / 5d) * v;
             double vy = (player.getRotationVector().y + (Math.random() - 0.5d) / 5d) * v;
             double vz = (player.getRotationVector().z + (Math.random() - 0.5d) / 5d) * v;
-            double x = player.getEyePos().getX() + vx / v * 1.5;
-            double y = player.getEyePos().getY() + vy / v * 1.5;
-            double z = player.getEyePos().getZ() + vz / v * 1.5;
             SkillFH5Ball ball = new SkillFH5Ball(player.getWorld(), player, vx, vy, vz, damage, range, targets, i);
             player.getWorld().spawnEntity(ball);
         }
