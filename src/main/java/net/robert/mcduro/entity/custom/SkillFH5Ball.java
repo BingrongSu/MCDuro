@@ -128,7 +128,7 @@ public class SkillFH5Ball extends SmallFireballEntity {
                 if (entity instanceof LivingEntity livingEntity) {
                     livingEntity.setFireTicks(250);
                     float distance = Math.max(entity.distanceTo(this), 1);
-                    livingEntity.damage(this.getDamageSources().generic(), damage);
+                    livingEntity.damage(this.getDamageSources(), damage);
                     System.out.printf("%d -> damage %s with %.2f, %.2f left%n", index, entity.getName().getString(), damage, livingEntity.getHealth());
                 }
             }

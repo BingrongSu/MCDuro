@@ -5,6 +5,7 @@
   "mixins": [
     "ClampedEntityAttributeMixin",
     "InGameHudMixin",
+    "LivingEntityMixin",
     "ZombieEntityMixin"
   ],
   "injectors": {
