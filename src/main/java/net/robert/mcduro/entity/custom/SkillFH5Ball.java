@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.robert.mcduro.MCDuro;
 import net.robert.mcduro.game.ModGameRules;
 import net.robert.mcduro.player.PlayerData;
 import net.robert.mcduro.player.StateSaverAndLoader;
@@ -93,25 +94,7 @@ public class SkillFH5Ball extends SmallFireballEntity {
     }
 
     private void rangeDamage(HitResult hitResult) {
-        if (!this.getWorld().isClient) {
-            System.out.printf("%d -> Begin range damage%n", index);
-            PlayerData playerData = StateSaverAndLoader.getPlayerState((PlayerEntity) this.getOwner());
-            double x = hitResult.getPos().x;
-            double y = hitResult.getPos().y;
-            double z = hitResult.getPos().z;
-            Box box = new Box(x - range, y - range, z - range,
-                    x + range, y + range, z + range);
-            List<Entity> entities = this.getWorld().getOtherEntities(this.getOwner(), box);
-            for (Entity entity : entities) {
-                if (entity instanceof LivingEntity livingEntity) {
-                    livingEntity.setFireTicks(250);
-                    float distance = Math.max(entity.distanceTo(this), 1);
-//                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage);
-                    livingEntity.damage(this.getDamageSources().generic(), damage);
-                    System.out.printf("%d -> damage %s with %.2f, %.2f left%n", index, entity.getName().getString(), damage, livingEntity.getHealth());
-                }
-            }
-        }
+       rangeDamage(hitResult.getPos());
     }
 
     private void rangeDamage(Vec3d pos) {
@@ -128,8 +111,9 @@ public class SkillFH5Ball extends SmallFireballEntity {
                 if (entity instanceof LivingEntity livingEntity) {
                     livingEntity.setFireTicks(250);
                     float distance = Math.max(entity.distanceTo(this), 1);
-                    livingEntity.damage(this.getDamageSources().fireball(this, this.getOwner()), damage);
+                    livingEntity.damage(this.getDamageSources().fireball(this, this.getOwner()), -damage);
                     System.out.printf("%d -> damage %s with %.2f, %.2f left%n", index, entity.getName().getString(), damage, livingEntity.getHealth());
+                    MCDuro.scheduledTask(()-> livingEntity.damage(this.getDamageSources().generic(), -11.21f), 2L);
                 }
             }
         }

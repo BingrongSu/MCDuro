@@ -13,9 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-    @Shadow public abstract boolean damage(DamageSource source, float amount);
 
-    @Shadow public abstract void damageArmor(DamageSource source, float amount);
+    @Shadow public abstract boolean damage(DamageSource source, float amount);
 
     @Unique
     private float damage = 0f;
@@ -23,7 +22,8 @@ public abstract class LivingEntityMixin {
     @ModifyVariable(method = "damage", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private float modifyAmount(float amount) {
         if (amount == -11.21f) {
-            float ans = amount + damage;
+            float ans = damage;
+            System.out.printf("释放所有累加伤害：%f.2%n", damage);
             damage = 0;
             return ans;
         } else {
@@ -33,7 +33,9 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "damage", at = @At("HEAD"), cancellable = true)
     public void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (source.getSource() instanceof SkillFH5Ball) {
+        if (amount <= 0) {
+            this.damage -= amount;
+            System.out.printf("累加伤害：%.2f\n", -amount);
             cir.cancel();
         }
         System.out.println(source.getType());
