@@ -144,7 +144,7 @@ public class FHSkills {
         if (!player.getWorld().isClient) {
             PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
             int input = Helper.powerNeeded("fengHuang", "4", power, playerData.maxHunLi);
-            float damage = (float) (input / 6f * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(2).get(0))));
+            float damage = (float) (input / 6f * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(3).get(0))));
             damage = damageBoosted(damage, player, playerData);
             double range = playerData.hunLiLevel / 6f * (1 + 0.15+(0.5-0.15)*power);
             range = rangeBoosted(range, player, playerData);
@@ -164,12 +164,13 @@ public class FHSkills {
     // 5. 凤凰流星雨
     public static void skill5(PlayerEntity player, double power, List<Entity> targets) {
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-        float damage = 10f;
+        int input = Helper.powerNeeded("fengHuang", "5", power, playerData.maxHunLi);
+        float damage = (float) (playerData.maxHunLi * power * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(4).get(0))));
         damage = damageBoosted(damage, player, playerData);
-        double range = 3F;
+        double range = 1 + playerData.hunLiLevel/50d;
         range = rangeBoosted(range, player, playerData);
         double v = 5;
-        int n = (int) (10);
+        int n = (int) (playerData.hunLiLevel/5.6 * (1 + 0.15+(0.4-0.15)*power));
         for (int i = 0; i < n; i++) {
             double vx = (player.getRotationVector().x + (Math.random() - 0.5d) / 5d) * v;
             double vy = (player.getRotationVector().y + (Math.random() - 0.5d) / 5d) * v;
@@ -177,6 +178,7 @@ public class FHSkills {
             SkillFH5Ball ball = new SkillFH5Ball(player.getWorld(), player, vx, vy, vz, damage, range, targets, i);
             player.getWorld().spawnEntity(ball);
         }
+        playerData.increaseHunLi(-input, player);
     }
 
 //    // 6. 凤凰穿云击

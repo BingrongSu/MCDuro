@@ -101,6 +101,8 @@ public class Helper {
                     yield (int) (maxHunLi * (0.05 + (0.2 - 0.05) * power) + 0.5);
                 } else if ("4".contains(skill)) {
                     yield (int) (maxHunLi * (0.15 + (0.5 - 0.15) * power) + 0.5);
+                } else if ("5".contains(skill)) {
+                    yield (int) (maxHunLi * (0.15 + (0.4 - 0.15) * power) + 0.5);
                 }
                 yield 0;
             }

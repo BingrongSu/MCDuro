@@ -82,22 +82,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
     }
 
     private void rangeDamage(HitResult hitResult) {
-        if (!this.getWorld().isClient) {
-            PlayerData playerData = StateSaverAndLoader.getPlayerState((PlayerEntity) this.getOwner());
-            double x = hitResult.getPos().x;
-            double y = hitResult.getPos().y;
-            double z = hitResult.getPos().z;
-            Box box = new Box(x - range, y - range, z - range,
-                    x + range, y + range, z + range);
-            List<Entity> entities = this.getWorld().getOtherEntities(this.getOwner(), box);
-            for (Entity entity : entities) {
-                if (entity instanceof LivingEntity) {
-                    entity.setFireTicks(250);
-                    float distance = Math.max(entity.distanceTo(this), 1);
-                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage*(1 - (4*distance-4) / playerData.hunLiLevel));
-                }
-            }
-        }
+        rangeDamage(hitResult.getPos());
     }
 
     private void rangeDamage(Vec3d pos) {
