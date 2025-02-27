@@ -181,7 +181,7 @@ public class FHSkills {
         playerData.increaseHunLi(-input, player);
     }
 
-//    // 6. 凤凰穿云击
+    // 6. 凤凰穿云击
 //    public static void Skill6(PlayerEntity player) {
 //        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 //        float damage = playerData.years.get("fengHuang").get(5) / 5f;
@@ -197,8 +197,8 @@ public class FHSkills {
 //        fireball.setPos(player.getX() + x * 2, player.getY() + y * 2, player.getZ() + z * 2);
 //        player.getWorld().spawnEntity(fireball);
 //    }
-//
-//    // 7. 武魂真身 - 邪火凤凰真身
+
+    // 7. 武魂真身 - 邪火凤凰真身
 //    public static void Skill7(PlayerEntity player) {
 //        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
 //        int reduce = (int) (Math.max((7 - Math.log10(playerData.years.get("fengHuang").get(6))) / 7d, 0.1d) * playerData.maxHunLi);
@@ -207,8 +207,8 @@ public class FHSkills {
 //            player.addStatusEffect(new StatusEffectInstance(ModEffects.SkillFH7, Math.min(playerData.years.get("fengHuang").get(6), 9000), 1, false, true, true));
 //        }
 //    }
-//
-//    // 8. 凤凰弑心链
+
+    // 8. 凤凰弑心链
 //    public static void Skill8(PlayerEntity player) {
 //        Vec3d looking = player.getRotationVector();
 //        Vec3d pos = player.getEyePos();
