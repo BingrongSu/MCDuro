@@ -23,6 +23,7 @@ public class ModItemGroup {
                         entries.add(ModBlocks.JX_BALL);
                         entries.add(ModBlocks.SMITH_SMELTING);
                         entries.add(ModBlocks.SMITH_SMELTING_CHIMNEY);
+                        entries.add(ModBlocks.ALCHEMY_FURNACE);
 
                         entries.add(ModBlocks.SHEN_SILVER_BLOCK);
                         entries.add(ModItems.SHEN_SILVER_INGOT);

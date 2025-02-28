@@ -11,6 +11,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.robert.mcduro.MCDuro;
+import net.robert.mcduro.block.custom.AlchemyFurnaceBlock;
 import net.robert.mcduro.block.custom.JXBallBlock;
 import net.robert.mcduro.block.custom.SmithSmeltingBlock;
 import net.robert.mcduro.block.custom.SmithSmeltingChimneyBlock;
@@ -42,6 +43,10 @@ public class ModBlocks {
     public static final Block SMITH_SMELTING_CHIMNEY = registerBlocks("smith_smelting_chimney",
             new SmithSmeltingChimneyBlock(FabricBlockSettings.copyOf(Blocks.STONE)
                     .strength(Blocks.DEEPSLATE.getHardness(), Blocks.DEEPSLATE.getBlastResistance())
+                    .nonOpaque()));
+    public static final Block ALCHEMY_FURNACE = registerBlocks("alchemy_furnace",
+            new AlchemyFurnaceBlock(FabricBlockSettings.copyOf(Blocks.COPPER_BLOCK)
+                    .strength(Blocks.COPPER_BLOCK.getHardness(), Blocks.COPPER_BLOCK.getBlastResistance())
                     .nonOpaque()));
 
     // 注册方法  注册方块与注册方块物品

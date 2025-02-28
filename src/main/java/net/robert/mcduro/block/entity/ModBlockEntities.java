@@ -17,6 +17,10 @@ public class ModBlockEntities {
             Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(MCDuro.MOD_ID, "smith_smelting_be"),
                     FabricBlockEntityTypeBuilder.create(SmithSmeltingBlockEntity::new,
                             ModBlocks.SMITH_SMELTING).build());
+    public static final BlockEntityType<AlchemyFurnaceBlockEntity> ALCHEMY_FURNACE_BLOCK_ENTITY =
+            Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(MCDuro.MOD_ID, "alchemy_furnace_be"),
+                    FabricBlockEntityTypeBuilder.create(AlchemyFurnaceBlockEntity::new,
+                            ModBlocks.ALCHEMY_FURNACE).build());
 
     public static void registerBlockEntities(){
         MCDuro.LOGGER.info("Registering block entities for "+MCDuro.MOD_ID);

@@ -23,6 +23,7 @@ public class ModModelsProvider extends FabricModelProvider {
         blockStateModelGenerator.registerSimpleState(ModBlocks.JX_BALL);
         blockStateModelGenerator.registerSimpleState(ModBlocks.JUE_XING_TAI);
         blockStateModelGenerator.registerSimpleState(ModBlocks.SMITH_SMELTING_CHIMNEY);
+        blockStateModelGenerator.registerSimpleState(ModBlocks.ALCHEMY_FURNACE);
     }
 
     @Override

@@ -1,9 +1,9 @@
-// 1.20.2	2025-02-13T08:02:23.3328139	MC Duro/Block Loot Tables
+// 1.20.2	2025-02-28T15:51:34.2642791	MC Duro/Block Loot Tables
 ca51afd43fdcfcf86db65777614b5e7b1bcf1dcd data\mcduro\loot_tables\blocks\smith_smelting_chimney.json
 fb52d547dbc09c4d76d9121ee683626e29cbffeb data\mcduro\loot_tables\blocks\deepslate_shen_silver_ore.json
 ced2114acef5e1494d0819dbb0f6f52950e25319 data\mcduro\loot_tables\blocks\nether_shen_silver_ore.json
-79034fbe8a33aae5a2449ec6a798ee15501c2bf6 data\mcduro\loot_tables\blocks\shen_silver_ore.json
 e904c39c1f9d2a6b3a3a6b3db2ead483f7db98fa data\mcduro\loot_tables\blocks\jx_ball.json
+79034fbe8a33aae5a2449ec6a798ee15501c2bf6 data\mcduro\loot_tables\blocks\shen_silver_ore.json
 007a14f6965f42f2b84d5980bfdf67dc71178db8 data\mcduro\loot_tables\blocks\smith_smelting.json
 49ae03da4fba7d3be4b76488fd5877c34b9a4142 data\mcduro\loot_tables\blocks\jue_xing_tai.json
 3476824ab8d2771c669915dfb094cb538a0cfbcf data\mcduro\loot_tables\blocks\shen_silver_block.json

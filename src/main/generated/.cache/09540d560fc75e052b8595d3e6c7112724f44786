@@ -1,12 +1,14 @@
-// 1.20.2	2025-02-13T08:02:23.3348136	MC Duro/Model Definitions
+// 1.20.2	2025-02-28T15:51:34.2662786	MC Duro/Model Definitions
 04b1f4c659cf4842f5c8c6eaf64da78f4455c96d assets\mcduro\models\item\max_hunli_pill_l2.json
 2d1c5fbf83b58a6c4e2a9712abf0948b255850f3 assets\mcduro\models\item\max_hunli_pill_l5.json
 d25fbf1b1d0e5a7cedb456271c0fa1c59a45dbf0 assets\mcduro\models\item\jue_xing_tai.json
+cab2d9b93b3d7b614e5660e5af5172b47997658c assets\mcduro\blockstates\alchemy_furnace.json
 6514da66326639ba93bcaf2a6f457afe4a74d888 assets\mcduro\models\item\shen_silver_nugget.json
+61f4811cd820bf2f729303a422dcb110ad7474f0 assets\mcduro\models\item\wu_hun_liu_li.json
 504f47bdd425210b04bc3c894aa0270d4fbbd3bd assets\mcduro\models\item\hunli_pill_l3.json
 0257ca8dad3fcbfb44efd70e166b7b0342057042 assets\mcduro\models\item\hunli_pill_l1.json
-61f4811cd820bf2f729303a422dcb110ad7474f0 assets\mcduro\models\item\wu_hun_liu_li.json
 e1cf87c7de1bd740dd511bbf3f6afa09b1730c68 assets\mcduro\models\block\nether_shen_silver_ore.json
+ddbf3035c30ed1771d80948f3c9e81e16b57a445 assets\mcduro\models\item\alchemy_furnace.json
 e82924a172e4b7b3e31d87dc305daf9149f297c0 assets\mcduro\blockstates\shen_silver_ore.json
 344e33a913449903b27ef9135662db64f34f0a82 assets\mcduro\models\item\hunli_pill_l6.json
 97031ecefaca53518e19ec552116afc8cf231046 assets\mcduro\models\item\jx_ball.json

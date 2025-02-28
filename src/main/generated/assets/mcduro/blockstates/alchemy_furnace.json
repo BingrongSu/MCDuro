@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "mcduro:block/alchemy_furnace"
+    }
+  }
+}
