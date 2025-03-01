@@ -42,7 +42,7 @@ public class ModHudEvents {
             RenderSystem.enableDepthTest();
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
             Text textL1 = Text.literal("Level: " + Helper.hunLi2level(ModClientEvents.playerData.maxHunLi) + ", " + ModClientEvents.playerData.hunLiLevel);
-            Text textL2 = Text.literal("Power: " + ModClientEvents.playerData.hunLi);
+            Text textL2 = Text.literal("Soul Power: " + ModClientEvents.playerData.hunLi);
             Text textL3 = Text.literal("Ability: " + ModClientEvents.playerData.maxHunLi);
             int x = 5;
             int y = context.getScaledWindowHeight() - 40;
@@ -94,8 +94,11 @@ public class ModHudEvents {
             if (!playerData.openedWuHun.equals("null")) {
                 List<List<Double>> wuHunData = playerData.wuHun.getOrDefault(playerData.openedWuHun, new ArrayList<>());
                 int n = 0;
-                for (List<Double> skill : wuHunData) {
-                    double power = skill.get(1) - ModClientEvents.thresholdVal;
+                for (int i = 0; i < wuHunData.size(); i++) {
+                    double min = Helper.skillPower.get(playerData.openedWuHun).get("%dmin".formatted(i+1));
+                    double max = Helper.skillPower.get(playerData.openedWuHun).get("%dmax".formatted(i+1));
+                    double thresholdVal = min / (max - min);
+                    double power = wuHunData.get(i).get(1) - thresholdVal;
                     if (power >= 0) {
                         renderProgressBar(context, power, n++);
                     }

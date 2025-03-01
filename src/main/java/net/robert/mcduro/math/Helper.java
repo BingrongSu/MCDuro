@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.robert.mcduro.MCDuro;
+import net.robert.mcduro.events.ModClientEvents;
 
 import java.util.*;
 
@@ -97,17 +98,35 @@ public class Helper {
     public static int powerNeeded(String wuHun, String skill, double power, int maxSoulPower) {
         return (int) (maxSoulPower * (skillPower.get(wuHun).get(skill+"min") + (skillPower.get(wuHun).get(skill+"max") - skillPower.get(wuHun).get(skill+"min")) * power) + 0.5);
     }
-//
-//    public static double getChargeV(String wuHun, int soulPowerLevel, String skill) {
-//        return switch (wuHun) {
-//            case "fengHuang" -> {
-//                if ("1".contains(skill)) {
-//                    yield
-//                }
-//            }
-//            default -> 0;
-//        };
-//    }
+
+    public static int totalPowerNeeded() {
+        int ans = 0;
+        List<List<Double>> wuHunData = ModClientEvents.playerData.wuHun.get(ModClientEvents.playerData.openedWuHun);
+        for (int i = 0; i < wuHunData.size(); i++) {
+            double min = Helper.skillPower.get(ModClientEvents.playerData.openedWuHun).get("%dmin".formatted(i+1));
+            double max = Helper.skillPower.get(ModClientEvents.playerData.openedWuHun).get("%dmax".formatted(i+1));
+            double thresholdVal = min / (max - min);
+            ans += powerNeeded(ModClientEvents.playerData.openedWuHun, "" + (i+1), wuHunData.get(i).get(1) - thresholdVal, ModClientEvents.playerData.maxHunLi);
+        }
+        return ans;
+    }
+
+    public static double getChargeV(String wuHun, int soulPowerLevel, String skill) {
+        return switch (wuHun) {
+            case "fengHuang" -> switch (skill) {
+                case "1" -> 1d / (2 * 20d);
+                case "2" -> 1d / (2.5 * 20d);
+                case "3" -> 1d / (2.6 * 20d);
+                case "4" -> 1d / (3.3 * 20d);
+                case "5" -> 1d / (3.2 * 20d);
+                case "6" -> 1d / (3.5 * 20d);
+                case "8" -> 1d / (4 * 20d);
+                case "9" -> 1d / (6 * 20d);
+                default -> 0;
+            };
+            default -> 0;
+        };
+    }
 
     public static int increaseMaxHunLi(int origin, int increment, PlayerEntity player) {
         int ans = origin;
@@ -174,8 +193,8 @@ public class Helper {
         List<Double> tmpFH2 = List.of(0.2, 0.2, 0.2, 0.5, 0.4, 0.4, 0d, 1d);
         for (int i = 0; i < 8; i++) {
             int index = i < 6 ? i : i+1;
-            tmpFH.put("%dmin".formatted(index), tmpFH1.get(i));
-            tmpFH.put("%dmax".formatted(index), tmpFH2.get(i));
+            tmpFH.put("%dmin".formatted(index + 1), tmpFH1.get(i));
+            tmpFH.put("%dmax".formatted(index + 1), tmpFH2.get(i));
         }
         skillPower.put("fengHuang", tmpFH);
     }

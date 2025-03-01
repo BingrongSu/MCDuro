@@ -33,11 +33,10 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "damage", at = @At("HEAD"), cancellable = true)
     public void damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (amount <= 0) {
+        if (amount < 0) {
             this.damage -= amount;
             System.out.printf("累加伤害：%.2f\n", -amount);
             cir.cancel();
         }
-        System.out.println(source.getType());
     }
 }
