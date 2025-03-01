@@ -5,12 +5,12 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.robert.mcduro.MCDuro;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Helper {
     public static final List<Integer> list = new ArrayList<>();
+
+    public static Map<String, Map<String, Double>> skillPower = new HashMap<>();    // 魂技所需要的魂力百分比
 
     public static int level2HunLi(Integer level) {
         if (level == 100) {
@@ -94,22 +94,20 @@ public class Helper {
         return ans;
     }
 
-    public static int powerNeeded(String wuHun, String skill, double power, int maxHunLi) {
-        return switch (wuHun) {
-            case "fengHuang" -> {
-                if ("123".contains(skill)) {
-                    yield (int) (maxHunLi * (0.05 + (0.2 - 0.05) * power) + 0.5);
-                } else if ("4".contains(skill)) {
-                    yield (int) (maxHunLi * (0.15 + (0.5 - 0.15) * power) + 0.5);
-                } else if ("5".contains(skill)) {
-                    yield (int) (maxHunLi * (0.15 + (0.4 - 0.15) * power) + 0.5);
-                }
-                yield 0;
-            }
-            case "xiangChang" -> 0;
-            default -> 0;
-        };
+    public static int powerNeeded(String wuHun, String skill, double power, int maxSoulPower) {
+        return (int) (maxSoulPower * (skillPower.get(wuHun).get(skill+"min") + (skillPower.get(wuHun).get(skill+"max") - skillPower.get(wuHun).get(skill+"min")) * power) + 0.5);
     }
+//
+//    public static double getChargeV(String wuHun, int soulPowerLevel, String skill) {
+//        return switch (wuHun) {
+//            case "fengHuang" -> {
+//                if ("1".contains(skill)) {
+//                    yield
+//                }
+//            }
+//            default -> 0;
+//        };
+//    }
 
     public static int increaseMaxHunLi(int origin, int increment, PlayerEntity player) {
         int ans = origin;
@@ -170,5 +168,15 @@ public class Helper {
             list.add(level2HunLi(i+1));
         }
         list.add(30000000);     // 100级需要的魂力：3000万
+
+        Map<String, Double> tmpFH = new HashMap<>();
+        List<Double> tmpFH1 = List.of(0.05, 0.05, 0.05, 0.15, 0.15, 0.15, 0d, 0.3);
+        List<Double> tmpFH2 = List.of(0.2, 0.2, 0.2, 0.5, 0.4, 0.4, 0d, 1d);
+        for (int i = 0; i < 8; i++) {
+            int index = i < 6 ? i : i+1;
+            tmpFH.put("%dmin".formatted(index), tmpFH1.get(i));
+            tmpFH.put("%dmax".formatted(index), tmpFH2.get(i));
+        }
+        skillPower.put("fengHuang", tmpFH);
     }
 }
