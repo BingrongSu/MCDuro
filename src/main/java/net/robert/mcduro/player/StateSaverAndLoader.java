@@ -19,9 +19,11 @@ public class StateSaverAndLoader extends PersistentState {
         NbtCompound playersNbt = new NbtCompound();
         players.forEach((uuid, playerData) -> {
             NbtCompound playerNbt = new NbtCompound();
-            playerNbt.putInt("hunLi", playerData.soulPower);
-            playerNbt.putInt("maxHunLi", playerData.maxSoulPower);
-            playerNbt.putInt("hunLiLevel", playerData.soulPowerLevel);
+            playerNbt.putInt("soulPower", playerData.soulPower);
+            playerNbt.putInt("maxSoulPower", playerData.maxSoulPower);
+            playerNbt.putInt("soulPowerLevel", playerData.soulPowerLevel);
+            playerNbt.putDouble("spiritualPower", playerData.spiritualPower);
+            playerNbt.putDouble("maxSpiritualPower", playerData.maxSpiritualPower);
 
             NbtCompound wuHunNbt = new NbtCompound();
             playerData.wuHun.forEach((name, years) -> {
@@ -63,9 +65,11 @@ public class StateSaverAndLoader extends PersistentState {
         playersNbt.getKeys().forEach(key -> {
             PlayerData playerData = new PlayerData();
             NbtCompound playerNbt = playersNbt.getCompound(key);
-            playerData.soulPower = playerNbt.getInt("hunLi");
-            playerData.maxSoulPower = playerNbt.getInt("maxHunLi");
-            playerData.soulPowerLevel = playerNbt.getInt("hunLiLevel");
+            playerData.soulPower = playerNbt.getInt("soulPower");
+            playerData.maxSoulPower = playerNbt.getInt("maxSoulPower");
+            playerData.soulPowerLevel = playerNbt.getInt("soulPowerLevel");
+            playerData.spiritualPower = playerNbt.getDouble("spiritualPower");
+            playerData.maxSpiritualPower = playerNbt.getDouble("maxSpiritualPower");
 
             NbtCompound wuHunNbt = playerNbt.getCompound("wuHun");
             playerData.wuHun.clear();
