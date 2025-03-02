@@ -4,11 +4,9 @@ package net.robert.mcduro.player;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
-import net.robert.mcduro.MCDuro;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,9 +19,9 @@ public class StateSaverAndLoader extends PersistentState {
         NbtCompound playersNbt = new NbtCompound();
         players.forEach((uuid, playerData) -> {
             NbtCompound playerNbt = new NbtCompound();
-            playerNbt.putInt("hunLi", playerData.hunLi);
-            playerNbt.putInt("maxHunLi", playerData.maxHunLi);
-            playerNbt.putInt("hunLiLevel", playerData.hunLiLevel);
+            playerNbt.putInt("hunLi", playerData.soulPower);
+            playerNbt.putInt("maxHunLi", playerData.maxSoulPower);
+            playerNbt.putInt("hunLiLevel", playerData.soulPowerLevel);
 
             NbtCompound wuHunNbt = new NbtCompound();
             playerData.wuHun.forEach((name, years) -> {
@@ -65,9 +63,9 @@ public class StateSaverAndLoader extends PersistentState {
         playersNbt.getKeys().forEach(key -> {
             PlayerData playerData = new PlayerData();
             NbtCompound playerNbt = playersNbt.getCompound(key);
-            playerData.hunLi = playerNbt.getInt("hunLi");
-            playerData.maxHunLi = playerNbt.getInt("maxHunLi");
-            playerData.hunLiLevel = playerNbt.getInt("hunLiLevel");
+            playerData.soulPower = playerNbt.getInt("hunLi");
+            playerData.maxSoulPower = playerNbt.getInt("maxHunLi");
+            playerData.soulPowerLevel = playerNbt.getInt("hunLiLevel");
 
             NbtCompound wuHunNbt = playerNbt.getCompound("wuHun");
             playerData.wuHun.clear();

@@ -98,7 +98,7 @@ public class SkillFH4Ball extends AbstractFireballEntity {
                 if (entity instanceof LivingEntity) {
                     entity.setFireTicks(250);
                     float distance = Math.max(entity.distanceTo(this), 1);
-                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage*(1 - (4*distance-4) / playerData.hunLiLevel));
+                    entity.damage(this.getDamageSources().mobAttack((LivingEntity) this.getOwner()), damage*(1 - (4*distance-4) / playerData.soulPowerLevel));
                 }
             }
         }

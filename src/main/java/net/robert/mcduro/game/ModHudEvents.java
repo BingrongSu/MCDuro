@@ -41,9 +41,9 @@ public class ModHudEvents {
             RenderSystem.defaultBlendFunc();
             RenderSystem.enableDepthTest();
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
-            Text textL1 = Text.literal("Level: " + Helper.hunLi2level(ModClientEvents.playerData.maxHunLi) + ", " + ModClientEvents.playerData.hunLiLevel);
-            Text textL2 = Text.literal("Soul Power: " + ModClientEvents.playerData.hunLi);
-            Text textL3 = Text.literal("Ability: " + ModClientEvents.playerData.maxHunLi);
+            Text textL1 = Text.literal("Level: " + Helper.hunLi2level(ModClientEvents.playerData.maxSoulPower) + ", " + ModClientEvents.playerData.soulPowerLevel);
+            Text textL2 = Text.literal("Soul Power: " + ModClientEvents.playerData.soulPower);
+            Text textL3 = Text.literal("Ability: " + ModClientEvents.playerData.maxSoulPower);
             int x = 5;
             int y = context.getScaledWindowHeight() - 40;
             context.drawText(textRenderer, textL1, x, y, 0xff1111, true);

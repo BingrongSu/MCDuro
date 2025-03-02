@@ -18,9 +18,9 @@ public class ModEvents {
     public static Identifier SYNC_SHOWED_YEARS =  new Identifier(MCDuro.MOD_ID, "events.sync_showed_years");
     public static Identifier SYNC_PLAYERS_WUHUN =  new Identifier(MCDuro.MOD_ID, "events.sync_players_wuhun");
     public static Identifier INIT_SYNC = new Identifier(MCDuro.MOD_ID, "events.initial_sync");
-    public static Identifier SET_HUN_LI = new Identifier(MCDuro.MOD_ID, "events.set_hun_li");
-    public static Identifier SET_HUN_LI_LEVEL = new Identifier(MCDuro.MOD_ID, "events.set_hun_li_level");
-    public static Identifier SET_MAX_HUN_LI = new Identifier(MCDuro.MOD_ID, "events.set_max_hun_li");
+    public static Identifier SET_SOUL_POWER = new Identifier(MCDuro.MOD_ID, "events.set_soul_power");
+    public static Identifier SET_SOUL_POWER_LEVEL = new Identifier(MCDuro.MOD_ID, "events.set_soul_power_level");
+    public static Identifier SET_MAX_SOUL_POWER = new Identifier(MCDuro.MOD_ID, "events.set_max_soul_power");
     public static Identifier SET_WU_HUN = new Identifier(MCDuro.MOD_ID, "events.set_wu_hun");
     public static Identifier SET_OPENED_WU_HUN = new Identifier(MCDuro.MOD_ID, "events.set_opened_wu_hun");
     public static Identifier OPEN_WU_HUN = new Identifier(MCDuro.MOD_ID, "events.open_wu_hun");

@@ -21,9 +21,9 @@ import net.robert.mcduro.math.Helper;
 import java.util.*;
 
 public class PlayerData {
-    public Integer hunLi = 0;                                                   // 玩家当前魂力
-    public Integer maxHunLi = 0;                                                // 玩家当前魂力上限
-    public Integer hunLiLevel = 0;                                              // 玩家当前魂力等级
+    public Integer soulPower = 0;                                               // 玩家当前魂力
+    public Integer maxSoulPower = 0;                                            // 玩家当前魂力上限
+    public Integer soulPowerLevel = 0;                                          // 玩家当前魂力等级
     public HashMap<String, List<List<Double>>> wuHun = new HashMap<>();         // 玩家拥有的武魂和相关参数
     public String openedWuHun = "null";                                         // 玩家当前开启的武魂
     public Integer skillIndex = -1;                                             // 玩家当前使用的魂技
@@ -33,6 +33,8 @@ public class PlayerData {
     public PlayerEntity lastAttacker = null;                                    // 上一个攻击此玩家的玩家
     public Map<String, List<Long>> statusEffects = new HashMap<>();             // 玩家拥有的魂技相关状态效果
     public List<Entity> targets = new ArrayList<>();
+    public Double spiritualPower = 0d;                                          // 玩家当前精神力
+    public Double maxSpiritualPower = 0d;                                       // 玩家的精神力上限
 
     private final List<String> standardWuHun = List.of(                         // 标准武魂类型
                                                         "liuLi",
@@ -43,24 +45,24 @@ public class PlayerData {
         World world = player.getWorld();
         if (!world.isClient && amount != 0) {
             boolean result = false;
-            hunLi += amount;
-            if (hunLi <= 0) {
-                hunLi = 0;
-            } else if (hunLi > maxHunLi) {
-                hunLi = maxHunLi;
+            soulPower += amount;
+            if (soulPower <= 0) {
+                soulPower = 0;
+            } else if (soulPower > maxSoulPower) {
+                soulPower = maxSoulPower;
             } else {
                 result = true;
             }
             // 向客户端发送数据
             MinecraftServer server = world.getServer();
             PacketByteBuf data = PacketByteBufs.create();
-            data.writeInt(hunLi);
+            data.writeInt(soulPower);
 //            System.out.println("Server: Hun Li Set To: " + hunLi);
             assert server != null;
             ServerPlayerEntity playerEntity = server.getPlayerManager().getPlayer(player.getUuid());
             server.execute(() -> {
                 assert playerEntity != null;
-                ServerPlayNetworking.send(playerEntity, ModEvents.SET_HUN_LI, data);
+                ServerPlayNetworking.send(playerEntity, ModEvents.SET_SOUL_POWER, data);
             });
             return result;
         }
@@ -74,17 +76,17 @@ public class PlayerData {
         ServerPlayerEntity serverPlayer = server.getPlayerManager().getPlayer(player.getUuid());
         assert serverPlayer != null;
         if (!world.isClient && amount != 0) {
-            maxHunLi = Helper.increaseMaxHunLi(maxHunLi, amount, player);
-            hunLiLevel = Helper.hunLi2level(maxHunLi);
+            maxSoulPower = Helper.increaseMaxHunLi(maxSoulPower, amount, player);
+            soulPowerLevel = Helper.hunLi2level(maxSoulPower);
             // 向客户端发送数据
             PacketByteBuf data1 = PacketByteBufs.create();
-            data1.writeInt(maxHunLi);
+            data1.writeInt(maxSoulPower);
             PacketByteBuf data2 = PacketByteBufs.create();
-            data2.writeInt(hunLiLevel);
+            data2.writeInt(soulPowerLevel);
 //            System.out.println("Server -> Max Hun Li Set To: " + maxHunLi);
             server.execute(() -> {
-                ServerPlayNetworking.send(serverPlayer, ModEvents.SET_MAX_HUN_LI, data1);
-                ServerPlayNetworking.send(serverPlayer, ModEvents.SET_HUN_LI_LEVEL, data2);
+                ServerPlayNetworking.send(serverPlayer, ModEvents.SET_MAX_SOUL_POWER, data1);
+                ServerPlayNetworking.send(serverPlayer, ModEvents.SET_SOUL_POWER_LEVEL, data2);
             });
             return true;
         }
@@ -110,20 +112,20 @@ public class PlayerData {
             }
             tmp.forEach(wuhun -> wuHun.put(wuhun, new ArrayList<>()));
             for (String name : wuHun.keySet()) {player.sendMessage(Text.of("Server: 成功觉醒武魂：" + name));}
-            hunLiLevel = Helper.getInitialLevel(world.getTime());
-            maxHunLi = Helper.level2HunLi(hunLiLevel);
+            soulPowerLevel = Helper.getInitialLevel(world.getTime());
+            maxSoulPower = Helper.level2HunLi(soulPowerLevel);
             MinecraftServer server = player.getServer();
             assert server != null;
             server.execute(() -> {
                 syncWuHun(player);
 
                 PacketByteBuf data2 = PacketByteBufs.create();
-                data2.writeInt(hunLiLevel);
-                ServerPlayNetworking.send((ServerPlayerEntity) player, ModEvents.SET_HUN_LI_LEVEL, data2);
+                data2.writeInt(soulPowerLevel);
+                ServerPlayNetworking.send((ServerPlayerEntity) player, ModEvents.SET_SOUL_POWER_LEVEL, data2);
 
                 PacketByteBuf data3 = PacketByteBufs.create();
-                data3.writeInt(maxHunLi);
-                ServerPlayNetworking.send((ServerPlayerEntity) player, ModEvents.SET_MAX_HUN_LI, data3);
+                data3.writeInt(maxSoulPower);
+                ServerPlayNetworking.send((ServerPlayerEntity) player, ModEvents.SET_MAX_SOUL_POWER, data3);
                 MCDuro.GAIN_WUHUN.trigger((ServerPlayerEntity) player);
             });
         }
@@ -172,16 +174,16 @@ public class PlayerData {
 
     public void addRing(PlayerEntity player, double year) {
         if (!player.getWorld().isClient) {
-            boolean stuck = Helper.hunLi2level(maxHunLi) % 10 == 9 && Helper.hunLi2level(maxHunLi+1) % 10 == 0;
+            boolean stuck = Helper.hunLi2level(maxSoulPower) % 10 == 9 && Helper.hunLi2level(maxSoulPower +1) % 10 == 0;
             if (stuck && wuHun.get(openedWuHun).size() < 9) {
                 wuHun.get(openedWuHun).add(List.of(year, 0d));
                 syncWuHun(player);
-                maxHunLi += 1;
-                hunLiLevel += 1;
+                maxSoulPower += 1;
+                soulPowerLevel += 1;
                 PacketByteBuf dat1 = PacketByteBufs.create();
-                dat1.writeInt(maxHunLi);
+                dat1.writeInt(maxSoulPower);
                 PacketByteBuf dat2 = PacketByteBufs.create();
-                dat2.writeInt(hunLiLevel);
+                dat2.writeInt(soulPowerLevel);
 
                 World world = player.getWorld();
                 MinecraftServer server = world.getServer();
@@ -189,8 +191,8 @@ public class PlayerData {
                 ServerPlayerEntity serverPlayer = server.getPlayerManager().getPlayer(player.getUuid());
                 assert serverPlayer != null;
                 server.execute(() -> {
-                    ServerPlayNetworking.send(serverPlayer, ModEvents.SET_MAX_HUN_LI, dat1);
-                    ServerPlayNetworking.send(serverPlayer, ModEvents.SET_HUN_LI_LEVEL, dat2);
+                    ServerPlayNetworking.send(serverPlayer, ModEvents.SET_MAX_SOUL_POWER, dat1);
+                    ServerPlayNetworking.send(serverPlayer, ModEvents.SET_SOUL_POWER_LEVEL, dat2);
                 });
                 if (year < 100) {
                     MCDuro.GET_RING_TEN_CRI.trigger(serverPlayer);
@@ -213,7 +215,6 @@ public class PlayerData {
             }
         }
     }
-    // TODO 02/08/2025 吸收魂环的成就提示
 
     public void switchWuHun(PlayerEntity player) {
         if (player.getWorld().isClient) {
@@ -366,6 +367,6 @@ public class PlayerData {
 
     // TODO 02/09/2025 玩家使用魂技时魂环变化
     // TODO 02/09/2025 玩家使用技能切换 -> 魂环的显示和消失、HUD快捷栏显示
-    // TODO 02/09/2025 玩家是用精神力锁定
+    // TODO 02/09/2025 玩家使用精神力锁定，计算精神力消耗
 
 }

@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -44,15 +43,15 @@ public class ModServerEvents {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             PlayerData playerData = StateSaverAndLoader.getPlayerState(handler.getPlayer());
             PacketByteBuf data = PacketByteBufs.create();
-            data.writeInt(playerData.hunLi);
-            data.writeInt(playerData.maxHunLi);
-            data.writeInt(playerData.hunLiLevel);
+            data.writeInt(playerData.soulPower);
+            data.writeInt(playerData.maxSoulPower);
+            data.writeInt(playerData.soulPowerLevel);
 
             ServerPlayerEntity player = handler.player;
             player.sendMessage(Text.of("Server -> Initialized Server Player: " + player.getName().getString()));
-            player.sendMessage(Text.of("Server -> Hun Li: " + playerData.hunLi));
-            player.sendMessage(Text.of("Server -> Max Hun Li: " + playerData.maxHunLi));
-            player.sendMessage(Text.of("Server -> Hun Li Level: " + playerData.hunLiLevel));
+            player.sendMessage(Text.of("Server -> Hun Li: " + playerData.soulPower));
+            player.sendMessage(Text.of("Server -> Max Hun Li: " + playerData.maxSoulPower));
+            player.sendMessage(Text.of("Server -> Hun Li Level: " + playerData.soulPowerLevel));
 //            List<ServerPlayerEntity> players = new ArrayList<>(server.getPlayerManager().getPlayerList());
 //            players.remove(handler.player);
             server.execute(() -> {
@@ -66,15 +65,15 @@ public class ModServerEvents {
             List<ServerPlayerEntity> players = server.getPlayerManager().getPlayerList();
             for (ServerPlayerEntity player : players) {
                 PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-                if (playerData.maxHunLi != 0) {
-                    int increment = Helper.naturalIncrease(playerData.hunLiLevel);
+                if (playerData.maxSoulPower != 0) {
+                    int increment = Helper.naturalIncrease(playerData.soulPowerLevel);
                     boolean bl = playerData.increaseMaxHunLi(increment, player);
                     if (!bl && increment > 0) {
                         System.out.println("Can't increase!");
                     }
                 }
-                if (playerData.maxHunLi > 0) {
-                    if (playerData.hunLi == 0) {
+                if (playerData.maxSoulPower > 0) {
+                    if (playerData.soulPower == 0) {
                         if (player.getStatusEffect(StatusEffects.BLINDNESS) == null) {
                             player.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, Integer.MAX_VALUE, 2, false, false, false));
                         }
@@ -85,8 +84,8 @@ public class ModServerEvents {
                         player.removeStatusEffect(StatusEffects.BLINDNESS);
                     }
                 }
-                if (playerData.hunLi < playerData.maxHunLi) {
-                    playerData.increaseHunLi(Helper.naturalRecover(playerData.hunLiLevel), player);
+                if (playerData.soulPower < playerData.maxSoulPower) {
+                    playerData.increaseHunLi(Helper.naturalRecover(playerData.soulPowerLevel), player);
                 }
             }
         });
@@ -198,7 +197,7 @@ public class ModServerEvents {
                     player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 10, 1, false, false, false));
                 }
                 if (playerData.statusEffects.isEmpty()) continue;
-                if (!playerData.statusEffects.containsKey("FHSkill3") && playerData.hunLiLevel < 70) {
+                if (!playerData.statusEffects.containsKey("FHSkill3") && playerData.soulPowerLevel < 70) {
                     if (player.interactionManager.getGameMode().isSurvivalLike()) {
                         player.getAbilities().allowFlying = false;
                         player.sendAbilitiesUpdate();
@@ -273,6 +272,5 @@ public class ModServerEvents {
         });
     }
     // TODO 01/11/2025 后期添加生物群系-星斗大森林
-    // TODO 02/09/2025 魂兽生命值突破1024限制
     // TODO 02/09/2025 魂兽掉落物、经验值等
 }

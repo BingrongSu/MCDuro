@@ -106,7 +106,7 @@ public class Helper {
             double min = Helper.skillPower.get(ModClientEvents.playerData.openedWuHun).get("%dmin".formatted(i+1));
             double max = Helper.skillPower.get(ModClientEvents.playerData.openedWuHun).get("%dmax".formatted(i+1));
             double thresholdVal = min / (max - min);
-            ans += powerNeeded(ModClientEvents.playerData.openedWuHun, "" + (i+1), wuHunData.get(i).get(1) - thresholdVal, ModClientEvents.playerData.maxHunLi);
+            ans += powerNeeded(ModClientEvents.playerData.openedWuHun, "" + (i+1), wuHunData.get(i).get(1) - thresholdVal, ModClientEvents.playerData.maxSoulPower);
         }
         return ans;
     }

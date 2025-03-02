@@ -38,16 +38,16 @@ public class FHSkills {
         double x = dir.x, y = dir.y, z = dir.z;
         List<Entity> tmp = new ArrayList<>();
         double dDistance = .25;
-        double distance = (playerData.hunLiLevel / 1.2d) * (1 + 0.05+(0.2-0.05)*power);
+        double distance = (playerData.soulPowerLevel / 1.2d) * (1 + 0.05+(0.2-0.05)*power);
         distance = rangeBoosted(distance, player, playerData);
-        double input = playerData.maxHunLi * (0.05+(0.2-0.05)*power);
+        double input = playerData.maxSoulPower * (0.05+(0.2-0.05)*power);
         double cross = 0;
 
         playerData.increaseHunLi(-(int)(input + 0.5), player);
         float damageDrain = 0;
 
         for (double i = 0; i < distance && cross <= 25; i+=dDistance) {
-            float damage = (float) (input/5d * (1-((i - 1) / playerData.hunLiLevel)));
+            float damage = (float) (input/5d * (1-((i - 1) / playerData.soulPowerLevel)));
             damage *= (float) (0.8 + 0.2 * Math.log10(playerData.wuHun.get(playerData.openedWuHun).get(0).get(0)));
             damage = damageBoosted(damage, player, playerData);
             double range = .5;
@@ -119,7 +119,7 @@ public class FHSkills {
             double amp = 600 + (3600-600) * power;
             Long duration = (long) (amp * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(1).get(0))) * (1 + (0.05+(0.2-0.05)*power)));
             playerData.addStatusEffect(player, "FHSkill2", new ArrayList<>(List.of(duration, 0L)));
-            playerData.increaseHunLi(-Helper.powerNeeded("fengHuang", "2", power, playerData.maxHunLi), player);
+            playerData.increaseHunLi(-Helper.powerNeeded("fengHuang", "2", power, playerData.maxSoulPower), player);
         }
     }
     // TODO 02/09/2025 魂核的凝聚、魂核增幅魂力恢复
@@ -135,7 +135,7 @@ public class FHSkills {
                 player.getAbilities().allowFlying = true;
                 player.sendAbilitiesUpdate();
             }
-            playerData.increaseHunLi(-Helper.powerNeeded("fengHuang", "3", power, playerData.maxHunLi), player);
+            playerData.increaseHunLi(-Helper.powerNeeded("fengHuang", "3", power, playerData.maxSoulPower), player);
         }
     }
 
@@ -143,10 +143,10 @@ public class FHSkills {
     public static void skill4(PlayerEntity player, double power, List<Entity> targets) {
         if (!player.getWorld().isClient) {
             PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-            int input = Helper.powerNeeded("fengHuang", "4", power, playerData.maxHunLi);
+            int input = Helper.powerNeeded("fengHuang", "4", power, playerData.maxSoulPower);
             float damage = (float) (input / 6f * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(3).get(0))));
             damage = damageBoosted(damage, player, playerData);
-            double range = playerData.hunLiLevel / 6f * (1 + 0.15+(0.5-0.15)*power);
+            double range = playerData.soulPowerLevel / 6f * (1 + 0.15+(0.5-0.15)*power);
             range = rangeBoosted(range, player, playerData);
             double x = player.getRotationVector().x;
             double y = player.getRotationVector().y;
@@ -164,13 +164,13 @@ public class FHSkills {
     // 5. 凤凰流星雨
     public static void skill5(PlayerEntity player, double power, List<Entity> targets) {
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-        int input = Helper.powerNeeded("fengHuang", "5", power, playerData.maxHunLi);
-        float damage = (float) (playerData.maxHunLi * power * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(4).get(0))));
+        int input = Helper.powerNeeded("fengHuang", "5", power, playerData.maxSoulPower);
+        float damage = (float) (playerData.maxSoulPower * power * (0.8 + 0.2*Math.log10(playerData.wuHun.get("fengHuang").get(4).get(0))));
         damage = damageBoosted(damage, player, playerData);
-        double range = 1 + playerData.hunLiLevel/50d;
+        double range = 1 + playerData.soulPowerLevel /50d;
         range = rangeBoosted(range, player, playerData);
         double v = 5;
-        int n = (int) (playerData.hunLiLevel/5.6 * (1 + 0.15+(0.4-0.15)*power));
+        int n = (int) (playerData.soulPowerLevel /5.6 * (1 + 0.15+(0.4-0.15)*power));
         for (int i = 0; i < n; i++) {
             double vx = (player.getRotationVector().x + (Math.random() - 0.5d) / 5d) * v;
             double vy = (player.getRotationVector().y + (Math.random() - 0.5d) / 5d) * v;

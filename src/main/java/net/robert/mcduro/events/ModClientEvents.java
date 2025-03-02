@@ -39,37 +39,37 @@ public class ModClientEvents {
 
     private static void registerEvents() {
         ClientPlayNetworking.registerGlobalReceiver(ModEvents.INIT_SYNC, (client, handler, buf, sender) -> {
-            playerData.hunLi = buf.readInt();
-            playerData.maxHunLi = buf.readInt();
-            playerData.hunLiLevel = buf.readInt();
+            playerData.soulPower = buf.readInt();
+            playerData.maxSoulPower = buf.readInt();
+            playerData.soulPowerLevel = buf.readInt();
             client.execute(() -> {
                 assert client.player != null;
-                client.player.sendMessage(Text.of("Client initialized player Hun Li: " + playerData.hunLi));
-                client.player.sendMessage(Text.of("Client initialized player Max Hun Li: " + playerData.maxHunLi));
-                client.player.sendMessage(Text.of("Client initialized player Hun Li Level: " + playerData.hunLiLevel));
+                client.player.sendMessage(Text.of("Client initialized player Hun Li: " + playerData.soulPower));
+                client.player.sendMessage(Text.of("Client initialized player Max Hun Li: " + playerData.maxSoulPower));
+                client.player.sendMessage(Text.of("Client initialized player Hun Li Level: " + playerData.soulPowerLevel));
                 ClientPlayNetworking.send(ModEvents.SYNC_PLAYERS_WUHUN, PacketByteBufs.create());
             });
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(ModEvents.SET_MAX_HUN_LI, (client, handler, buf, sender) -> {
-            playerData.maxHunLi = buf.readInt();
+        ClientPlayNetworking.registerGlobalReceiver(ModEvents.SET_MAX_SOUL_POWER, (client, handler, buf, sender) -> {
+            playerData.maxSoulPower = buf.readInt();
             PlayerEntity player = client.player;
             assert player != null;
 //            System.out.println("Client: Max Hun Li set to: " + playerData.maxHunLi);
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(ModEvents.SET_HUN_LI, (client, handler, buf, sender) -> {
-            playerData.hunLi = buf.readInt();
+        ClientPlayNetworking.registerGlobalReceiver(ModEvents.SET_SOUL_POWER, (client, handler, buf, sender) -> {
+            playerData.soulPower = buf.readInt();
             PlayerEntity player = client.player;
             assert player != null;
 //            System.out.println("Client: Hun Li set to: " + playerData.hunLi);
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(ModEvents.SET_HUN_LI_LEVEL, (client, handler, buf, sender) -> {
-            playerData.hunLiLevel = buf.readInt();
+        ClientPlayNetworking.registerGlobalReceiver(ModEvents.SET_SOUL_POWER_LEVEL, (client, handler, buf, sender) -> {
+            playerData.soulPowerLevel = buf.readInt();
             PlayerEntity player = client.player;
             assert player != null;
-            System.out.println("Client: Hun Li Level set to: " + playerData.hunLiLevel);
+            System.out.println("Client: Hun Li Level set to: " + playerData.soulPowerLevel);
         });
 
         ClientPlayNetworking.registerGlobalReceiver(ModEvents.SET_WU_HUN, (client, handler, buf, sender) -> {
@@ -131,12 +131,12 @@ public class ModClientEvents {
             if (!playerData.openedWuHun.equals("null")) {
                 List<List<Double>> wuHunData = playerData.wuHun.getOrDefault(playerData.openedWuHun, new ArrayList<>());
                 for (int i = 0; i < wuHunData.size(); i++) {
-                    chargeV = Helper.getChargeV(playerData.openedWuHun, playerData.hunLiLevel, ""+(i+1));
+                    chargeV = Helper.getChargeV(playerData.openedWuHun, playerData.soulPowerLevel, ""+(i+1));
                     double min = Helper.skillPower.get(playerData.openedWuHun).get("%dmin".formatted(i+1));
                     double max = Helper.skillPower.get(playerData.openedWuHun).get("%dmax".formatted(i+1));
                     thresholdVal = min / (max - min);
                     boolean isPressed = GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_1 + i) == GLFW.GLFW_PRESS;
-                    boolean hasPower = Helper.totalPowerNeeded() <= playerData.hunLi;
+                    boolean hasPower = Helper.totalPowerNeeded() <= playerData.soulPower;
                     if (isPressed) {
                         if (hasPower) {
                             wuHunData.get(i).set(1, wuHunData.get(i).get(1) + (wuHunData.get(i).get(1) < 1 + thresholdVal ? chargeV : 0));
